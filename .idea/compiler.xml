@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="LanxiPavilion-parent" />
+        <module name="LanxiPavilion-Utils" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="LanxiPavilion-pdfUtil" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>
