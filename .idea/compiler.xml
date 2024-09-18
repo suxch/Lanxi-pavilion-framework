@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="LanxiPavilion-Utils" />
         <module name="LanxiPavilion-Configuration" />
+        <module name="LanxiPavilion-Starter" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
