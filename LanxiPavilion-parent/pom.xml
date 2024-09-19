@@ -51,6 +51,24 @@
     <dependencyManagement>
         <dependencies>
 
+            <dependency>
+                <groupId>cn.com.blueInfo.utils</groupId>
+                <artifactId>LanxiPavilion-Utils</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.com.blueInfo.configuration</groupId>
+                <artifactId>LanxiPavilion-Configuration</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.com.blueInfo.starter</groupId>
+                <artifactId>LanxiPavilion-Starter</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
             <!-- SpringBoot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>

@@ -4,7 +4,7 @@
 
     <groupId>cn.com.blueInfo.starter</groupId>
     <artifactId>LanxiPavilion-Starter</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <parent>
@@ -16,19 +16,37 @@
     <name>LanxiPavilion-Starter</name>
     <url>http://maven.apache.org</url>
 
+    <build>
+        <finalName>core</finalName>
+    </build>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>cn.com.blueInfo.configuration</groupId>
+            <artifactId>LanxiPavilion-Configuration</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.com.blueInfo.utils</groupId>
+            <artifactId>LanxiPavilion-Utils</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
+
     </dependencies>
 </project>
