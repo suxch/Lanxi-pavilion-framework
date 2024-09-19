@@ -7,9 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="LanxiPavilion-web" />
         <module name="LanxiPavilion-Utils" />
-        <module name="LanxiPavilion-Configuration" />
         <module name="LanxiPavilion-Starter" />
+        <module name="LanxiPavilion-Configuration" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
