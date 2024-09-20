@@ -16,6 +16,7 @@
         <module>LanxiPavilion-Configuration</module>
         <module>LanxiPavilion-Starter</module>
         <module>LanxiPavilion-web</module>
+        <module>LanxiPavilion-package</module>
     </modules>
 
     <properties>
@@ -201,7 +202,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>cn.com.blueInfo.SuxchStarterApplication</mainClass>
+                    <mainClass>cn.com.blueInfo.starter.LanxiPavilionApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
                 <executions>

@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="LanxiPavilion-web" />
         <module name="LanxiPavilion-Utils" />
+        <module name="LanxiPavilion-package" />
         <module name="LanxiPavilion-Starter" />
         <module name="LanxiPavilion-Configuration" />
       </profile>
