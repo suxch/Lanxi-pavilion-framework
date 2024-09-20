@@ -25,18 +25,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>cn.com.blueInfo.configuration</groupId>
-            <artifactId>LanxiPavilion-Configuration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.com.blueInfo.utils</groupId>
-            <artifactId>LanxiPavilion-Utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.com.blueInfo.web</groupId>
-            <artifactId>LanxiPavilion-web</artifactId>
-        </dependency>
-        <dependency>
             <groupId>cn.com.blueInfo.starter</groupId>
             <artifactId>LanxiPavilion-Starter</artifactId>
         </dependency>
@@ -45,13 +33,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
