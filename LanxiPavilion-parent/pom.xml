@@ -17,6 +17,7 @@
         <module>LanxiPavilion-Starter</module>
         <module>LanxiPavilion-web</module>
         <module>LanxiPavilion-package</module>
+        <module>LanxiPavilion-core</module>
     </modules>
 
     <properties>
