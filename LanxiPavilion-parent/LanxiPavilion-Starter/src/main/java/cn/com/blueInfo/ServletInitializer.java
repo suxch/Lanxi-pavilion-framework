@@ -1,4 +1,4 @@
-package cn.com.blueInfo.starter;
+package cn.com.blueInfo;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

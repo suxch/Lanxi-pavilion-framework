@@ -4,6 +4,11 @@ server:
   servlet:
     # 测试时的上下文根
     context-path: /core
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  tomcat.uri-encoding: UTF-8
 
 spring:
   # 数据库配置
@@ -27,6 +32,7 @@ spring:
       min-idle: 15
       # 最长等待事件
       max-wait-millis: 2000
+
 
 # Mybatis-Plus 配置
 mybatis-plus:

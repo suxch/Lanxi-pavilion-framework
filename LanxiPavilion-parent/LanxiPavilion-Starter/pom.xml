@@ -32,8 +32,8 @@
         </dependency>
 
         <dependency>
-            <groupId>cn.com.blueInfo.utils</groupId>
-            <artifactId>LanxiPavilion-Utils</artifactId>
+            <groupId>cn.com.blueInfo.bpm</groupId>
+            <artifactId>LanxiPavilion-BPM</artifactId>
         </dependency>
 
         <dependency>
