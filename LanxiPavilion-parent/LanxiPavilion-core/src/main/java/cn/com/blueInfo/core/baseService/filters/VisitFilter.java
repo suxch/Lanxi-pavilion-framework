@@ -1,6 +1,7 @@
 package cn.com.blueInfo.core.baseService.filters;
 
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -18,7 +19,6 @@ import java.net.URLDecoder;
  * @date 2018-07-10 16:00:00
  * @author Administrator
  */
-@WebFilter(filterName = "VisitFilter", urlPatterns = "/*")
 public class VisitFilter implements Filter {
 
     @Override

@@ -2,6 +2,7 @@ package cn.com.blueInfo.core.baseService.filters;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -16,7 +17,6 @@ import java.io.IOException;
  * @date: 2021/8/12 14:52
  * @description: 请求过滤器   用于处理请求参数的校验
  */
-@WebFilter(filterName = "requestFilter", urlPatterns = "/*")
 public class RequestFilter implements Filter {
 
     @Override
