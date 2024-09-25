@@ -13,14 +13,20 @@ server:
 spring:
   # 数据库配置
   datasource:
+    dump-path: /Users/haiyuan/Desktop/dump
     # 数据库驱动类
+    #driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     driver-class-name: com.mysql.cj.jdbc.Driver
+    #driver-class-name: oracle.jdbc.driver.OracleDriver
     # 数据库地址
+    #url: jdbc:sqlserver://127.0.0.1:1433;databaseName=gqys;
     url: jdbc:mysql://127.0.0.1:3306/haiyuan?allowMultiQueries=true
+    #url: jdbc:oracle:thin:@172.172.103.229:1521:orcl2
     # 数据库用户名
     username: root
     # 数据库密码
     password: MyMemory19910516
+    # 数据库连接池配置
     dbcp2:
       # 初始连接数
       initial-size: 10
