@@ -36,6 +36,11 @@
             <artifactId>LanxiPavilion-BPM</artifactId>
         </dependency>
 
+        <!--<dependency>
+            <groupId>cn.com.blueInfo.core</groupId>
+            <artifactId>LanxiPavilion-core</artifactId>
+        </dependency>-->
+
         <dependency>
             <groupId>cn.com.blueInfo.web</groupId>
             <artifactId>LanxiPavilion-web</artifactId>

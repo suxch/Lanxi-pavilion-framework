@@ -21,8 +21,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>cn.com.blueInfo.core</groupId>
-            <artifactId>LanxiPavilion-core</artifactId>
+            <groupId>cn.com.blueInfo.utils</groupId>
+            <artifactId>LanxiPavilion-Utils</artifactId>
         </dependency>
 
         <dependency>
