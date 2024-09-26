@@ -47,3 +47,6 @@ npm install -g less-loader
 安装指定依赖到项目中去
 npm i less
 npm i less-loader
+
+在main.js中引用框架的时候，需要注意
+先引入框架 再引入模块，否则模块中修改框架中的样式会被忽略。按照先框架后模块的方式引入，模块中的样式的优先级会更高（需要待详细验证）
