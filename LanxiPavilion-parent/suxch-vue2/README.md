@@ -32,6 +32,7 @@ npm config set registry https://registry.npmmirror.com
 npm i @vue/cli -g
 
 创建vue项目
+通过cmd在指定目录中进行创建，否则默认创建在用户文件夹下
 vue create projectName
 
 运行vue项目
