@@ -1,28 +1,31 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="parent">
+    这是首页？
+    <SuxchHeader></SuxchHeader>
+    <SuxchMain></SuxchMain>
+    <SuxchFooter></SuxchFooter>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SuxchHeader from "@/components/SuxchHeader.vue";
+import SuxchMain from "@/components/SuxchMain.vue";
+import SuxchFooter from "@/components/SuxchFooter.vue";
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld: HelloWorld
+    SuxchHeader,
+    SuxchMain,
+    SuxchFooter
   }
 }
 </script>
 
 <style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  .parent {
+    width: 600px;
+    height: 900px;
+    margin: 0 auto;
+    background-color: aqua;
+  }
 </style>
