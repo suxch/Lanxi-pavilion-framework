@@ -1,8 +1,8 @@
 <template>
   <div class="parent">
     这是首页？
-    <SuxchHeader></SuxchHeader>
-    <SuxchMain></SuxchMain>
+    <SuxchHeader :title="myTitle" @replaceTitle="receiveData"></SuxchHeader>
+    <SuxchMain :suxch="sendData" @headerData="receiveHeaderData"></SuxchMain>
     <SuxchFooter></SuxchFooter>
   </div>
 </template>
@@ -17,6 +17,24 @@ export default {
     SuxchHeader,
     SuxchMain,
     SuxchFooter
+  },
+  data () {
+    return {
+      myTitle: "我是父级传过去的消息",
+      sendData: {
+        id: 1,
+        name: "suxch",
+        age: 23
+      }
+    }
+  },
+  methods: {
+    receiveData (data) {
+      this.myTitle = data;
+    },
+    receiveHeaderData (data) {
+      console.log(data)
+    }
   }
 }
 </script>

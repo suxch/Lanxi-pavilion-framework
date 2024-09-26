@@ -1,6 +1,6 @@
 <template>
   <div id="button">
-    <button @click="suxchButton">这是按钮</button>
+    <button @click="suxchButton">这是公共按钮</button>
   </div>
 </template>
 

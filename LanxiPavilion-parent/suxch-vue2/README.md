@@ -26,8 +26,9 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 vue.js 笔记
 
 修改npm源
+```
 npm config set registry https://registry.npmmirror.com
-
+```
 安装vue@cli
 npm i @vue/cli -g
 
@@ -50,3 +51,7 @@ npm i less-loader
 
 在main.js中引用框架的时候，需要注意
 先引入框架 再引入模块，否则模块中修改框架中的样式会被忽略。按照先框架后模块的方式引入，模块中的样式的优先级会更高（需要待详细验证）
+
+拉取vue项目后，在vue项目更目录执行指令
+npm cache clean -force 清除npm缓存
+npm install 重新安装依赖
