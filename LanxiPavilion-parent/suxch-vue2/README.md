@@ -55,3 +55,8 @@ npm i less-loader
 拉取vue项目后，在vue项目更目录执行指令
 npm cache clean -force 清除npm缓存
 npm install 重新安装依赖
+
+bootstrap和bootstrap-vue的下载指令
+npm install bootstrap
+npm install bootstrap@5.3.0-alpha1
+npm install bootstrap-vue
