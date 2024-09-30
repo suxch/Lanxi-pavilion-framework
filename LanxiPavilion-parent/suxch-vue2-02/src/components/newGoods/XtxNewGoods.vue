@@ -14,39 +14,19 @@
     </div>
     <div class="bd">
       <ul>
-        <li>
+        <li v-for="(item) in goods" :key="item.imgPath">
           <a href="#">
-            <div class="pic"><img src="@/assets/images/goods1.png" alt="" /></div>
-            <div class="txt">
-              <h4>KN95级莫兰迪色防护口罩</h4>
-              <p>¥ <span>79</span></p>
+            <!--
+                请注意：动态引用静态资源的时候，@/ 需要直接拼接到require中，不能由数据进行传递，否则不能被编译
+                require使用时，其中的引用符号并非单引号，也需要格外注意
+                第三注意点：文件后缀名也需要写死才可以。。。
+             -->
+            <div class="pic">
+              <img :src="require(`@/${item.imgPath}.png`)" alt="图片走丢了" />
             </div>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <div class="pic"><img src="@/assets/images/goods2.png" alt="" /></div>
             <div class="txt">
-              <h4>KN95级莫兰迪色防护口罩</h4>
-              <p>¥ <span>566</span></p>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <div class="pic"><img src="@/assets/images/goods3.png" alt="" /></div>
-            <div class="txt">
-              <h4>法拉蒙高颜值记事本可定制</h4>
-              <p>¥ <span>58</span></p>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <div class="pic"><img src="@/assets/images/goods4.png" alt="" /></div>
-            <div class="txt">
-              <h4>科技布布艺沙发</h4>
-              <p>¥ <span>3759</span></p>
+              <h4>{{item.goodName}}</h4>
+              <p>¥ <span>{{item.goodPrice}}</span></p>
             </div>
           </a>
         </li>
@@ -57,7 +37,41 @@
 
 <script>
 export default {
-
+  created() {
+    this.goods = [
+      {
+        imgPath: '@/assets/images/goods1.png',
+        goodName: 'KN95级莫兰迪色防护口罩',
+        goodPrice: 79
+      }, {
+        imgPath: '@/assets/images/goods2.png',
+        goodName: 'KN95级莫兰迪色防护口罩',
+        goodPrice: 566
+      }, {
+        imgPath: '@/assets/images/goods3.png',
+        goodName: '法拉蒙高颜值记事本可定制',
+        goodPrice: 58
+      }, {
+        imgPath: '@/assets/images/goods4.png',
+        goodName: '科技布布艺沙发',
+        goodPrice: 3759
+      }
+    ];
+    /*
+    * 这段代码主要是为了配合动态加载静态图片时，修改路径所需要的
+    * */
+    for (let g_i = 0, g_len = this.goods.length; g_i < g_len; g_i++) {
+      let oneGood = this.goods[g_i];
+      let currImgPath = oneGood.imgPath;
+      currImgPath = currImgPath.substring(2, currImgPath.indexOf('.'));
+      oneGood.imgPath = currImgPath;
+    }
+  },
+  data () {
+    return {
+      goods: []
+    }
+  }
 }
 </script>
 
