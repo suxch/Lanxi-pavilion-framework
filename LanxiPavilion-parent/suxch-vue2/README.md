@@ -60,3 +60,7 @@ bootstrap和bootstrap-vue的下载指令
 npm install bootstrap
 npm install bootstrap@5.3.0-alpha1
 npm install bootstrap-vue
+
+安装vue版的ajax-axios
+npm install axios
+npm i axios
