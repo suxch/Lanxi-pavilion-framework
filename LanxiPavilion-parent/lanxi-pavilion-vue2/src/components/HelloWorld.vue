@@ -35,6 +35,15 @@ export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  created() {
+    this.$http.get("")
+        .then(res => {
+          console.log(res)
+        })
+        .catch(error => {
+          console.log(error)
+        })
   }
 }
 </script>
