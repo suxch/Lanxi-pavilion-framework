@@ -14,7 +14,14 @@ const request = axios.create({
 Vue.prototype.$api = request;
 
 Vue.config.productionTip = false
-Vue.component("SuxchButton", SuxchButton)
+Vue.component("SuxchButton", SuxchButton);
+
+Vue.directive('inp-focus', {
+  inserted (el) {
+    el.focus();
+  }
+})
+
 new Vue({
   //render: h => h(App)
   // 下方是完整写法
