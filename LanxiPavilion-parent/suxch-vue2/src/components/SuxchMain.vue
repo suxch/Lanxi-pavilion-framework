@@ -4,8 +4,9 @@
     <SuxchButton></SuxchButton>
     <button @click="sendData">发送对象数据</button>
     <div>{{fromHeaderMsg}}</div>
-    <button>是否隐藏</button>
-    <SuxchModel></SuxchModel>
+    <button @click="showModel">是否隐藏</button>
+    <SuxchModel :showOrHide.sync="isShow"></SuxchModel>
+    <VueNextTick></VueNextTick>
   </div>
 </template>
 
@@ -13,6 +14,7 @@
 
 import Bus from "@/utils/EventBus";
 import SuxchModel from "@/components/SuxchModel.vue";
+import VueNextTick from "@/components/VueNextTick.vue";
 
 export default {
   props: ['suxch'],
@@ -43,16 +45,21 @@ export default {
         }
       ],
       fromHeaderMsg: "",
-      userinfo: {}
+      userinfo: {},
+      isShow: false
     }
   },
   methods: {
     sendData () {
       this.$emit('headerData', this.headerData)
+    },
+    showModel () {
+      this.isShow = true;
     }
   },
   components: {
-    SuxchModel
+    SuxchModel,
+    VueNextTick
   }
 }
 </script>
