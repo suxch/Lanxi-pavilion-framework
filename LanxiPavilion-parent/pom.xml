@@ -19,6 +19,7 @@
         <module>LanxiPavilion-package</module>
         <module>LanxiPavilion-core</module>
         <module>LanxiPavilion-BPM</module>
+        <module>LanxiPavilion-Business</module>
     </modules>
 
     <properties>
@@ -139,12 +140,12 @@
                 <version>${commons.lang.version}</version>
             </dependency>
 
-            <!-- dom4j xml解析 -->
+            <!-- dom4j xml解析
             <dependency>
                 <groupId>dom4j</groupId>
                 <artifactId>dom4j</artifactId>
                 <version>1.6.1</version>
-            </dependency>
+            </dependency> -->
 
             <!-- 读取文件工具包 -->
             <dependency>
@@ -188,11 +189,24 @@
             </dependency>
 
 
-
+            <!-- PDF文字提取 -->
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox</artifactId>
                 <version>2.0.24</version>
+            </dependency>
+
+
+            <!-- html & xml 解析 -->
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>1.6.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.18.1</version>
             </dependency>
 
         </dependencies>

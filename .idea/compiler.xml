@@ -14,10 +14,10 @@
         <module name="LanxiPavilion-package" />
         <module name="LanxiPavilion-Starter" />
         <module name="LanxiPavilion-BPM" />
+        <module name="LanxiPavilion-Business" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="LanxiPavilion-package" target="1.8" />
       <module name="LanxiPavilion-pdfUtil" target="1.7" />
     </bytecodeTargetLevel>
   </component>
