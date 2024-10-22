@@ -1,5 +1,7 @@
 package cn.com.blueInfo.business.lottery;
 
+import cn.com.blueInfo.business.lottery.enums.SportsLotteryEnum;
+import cn.com.blueInfo.business.lottery.enums.WelfareLotteryEnum;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,13 +13,22 @@ import java.io.IOException;
 public class ParseLotteryFiles {
 
     public static void main(String[] args) {
-        String fileName = "D:" + File.separator +
+        String folderName = "D:" + File.separator +
                 "中国彩票基础数据" + File.separator +
-                "大乐透-历史数据-01.txt";
-        if (fileName.contains("双色球")) {
-            parseWelfareLottery(fileName);
-        } else if (fileName.contains("大乐透")) {
-            parseSportsLottery(fileName);
+                "大乐透";
+        File folder = new File(folderName);
+        if (folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    String fileName = file.getAbsolutePath();
+                    if (fileName.contains("双色球")) {
+                        parseWelfareLottery(fileName);
+                    } else if (fileName.contains("大乐透")) {
+                        parseSportsLottery(fileName);
+                    }
+                }
+            }
         }
     }
 
@@ -33,6 +44,7 @@ public class ParseLotteryFiles {
             // 解析表头
             parseSportsLotteryHead(table);
             System.out.println();
+            // 解析表体
             parseSportsLotteryBody(table);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -56,7 +68,10 @@ public class ParseLotteryFiles {
                 Element oneColumn = tbody_tr_td.get(t_i);
                 //System.out.println(oneColumn);
                 if (t_i < 2 || t_i > 8) {
-                    System.out.println(oneColumn.text());
+                    String title = SportsLotteryEnum.getChineseByCode(t_i);
+                    if (!"N/A".equals(title)) {
+                        System.out.println(title + "：" + oneColumn.text());
+                    }
                 }
                 if (t_i >= 2 && t_i < 9) {
                     StringBuilder sportsLottery = new StringBuilder();
@@ -70,7 +85,7 @@ public class ParseLotteryFiles {
                         sportsLottery.append(blueBall.text()).append("-");
                     }
                     sportsLottery.setLength(sportsLottery.length() - 1);
-                    System.out.println(sportsLottery);
+                    System.out.println(SportsLotteryEnum.getChineseByCode(t_i) + "：" + sportsLottery);
                     t_i = 8;
                 }
             }
@@ -90,6 +105,7 @@ public class ParseLotteryFiles {
             // 解析表头
             parseWelfareLotteryHead(table);
             System.out.println();
+            // 解析表体
             parseWelfareLotteryBody(table);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -128,9 +144,12 @@ public class ParseLotteryFiles {
                     welfareLottery.append("--");
                     Element div_blue = column_div.getElementsByClass("qiu-item-wqgg-zjhm-blue").first();
                     welfareLottery.append(div_blue.text());
-                    System.out.println(welfareLottery);
+                    System.out.println(WelfareLotteryEnum.getChineseByCode(t_i) + "：" + welfareLottery);
                 } else {
-                    System.out.println(oneColumn.text());
+                    String title = WelfareLotteryEnum.getChineseByCode(t_i);
+                    if (!"N/A".equals(title)) {
+                        System.out.println(title + "：" + oneColumn.text());
+                    }
                 }
             }
             System.out.println();

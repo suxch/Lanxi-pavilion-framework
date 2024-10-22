@@ -1,0 +1,32 @@
+package cn.com.blueInfo.business.lottery.enums;
+
+/**
+ * 福利彩票枚举类
+ */
+public enum WelfareLotteryEnum {
+    A(0, "期号"),
+    B(1, "开奖日期"),
+    C(2, "开奖信息"),
+    D(3, "一等奖-注数"),
+    E(4, "一等奖-金额"),
+    F(5, "二等奖-注数"),
+    G(6, "二等奖-金额");
+
+    public final Integer code;
+
+    public final String value;
+
+    WelfareLotteryEnum(Integer code, String value) {
+        this.code = code;
+        this.value = value;
+    }
+
+    public static String getChineseByCode(Integer code) {
+        for (WelfareLotteryEnum welfareLotteryEnum : WelfareLotteryEnum.values()) {
+            if (code.equals(welfareLotteryEnum.code)) {
+                return welfareLotteryEnum.value;
+            }
+        }
+        return "N/A";
+    }
+}
