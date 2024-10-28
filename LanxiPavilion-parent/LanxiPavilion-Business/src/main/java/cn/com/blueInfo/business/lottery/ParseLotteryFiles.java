@@ -2,6 +2,8 @@ package cn.com.blueInfo.business.lottery;
 
 import cn.com.blueInfo.business.lottery.enums.SportsLotteryEnum;
 import cn.com.blueInfo.business.lottery.enums.WelfareLotteryEnum;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,7 +17,7 @@ public class ParseLotteryFiles {
     public static void main(String[] args) {
         String folderName = "D:" + File.separator +
                 "中国彩票基础数据" + File.separator +
-                "大乐透";
+                "双色球";
         File folder = new File(folderName);
         if (folder.isDirectory()) {
             File[] files = folder.listFiles();
@@ -61,7 +63,9 @@ public class ParseLotteryFiles {
 
     public static void parseSportsLotteryBody(Elements table) {
         Elements tbody_tr = table.select("#historyData").select("tr");
+        JSONArray result = new JSONArray();
         for (Element oneRow : tbody_tr) {
+            JSONObject oneData = new JSONObject();
             Elements tbody_tr_td = oneRow.select("td");
 
             for (int t_i = 0, t_len = tbody_tr_td.size(); t_i < t_len; t_i++) {
@@ -71,6 +75,7 @@ public class ParseLotteryFiles {
                     String title = SportsLotteryEnum.getChineseByCode(t_i);
                     if (!"N/A".equals(title)) {
                         System.out.println(title + "：" + oneColumn.text());
+                        oneData.put(SportsLotteryEnum.getSignByCode(t_i), oneColumn.text());
                     }
                 }
                 if (t_i >= 2 && t_i < 9) {
@@ -86,10 +91,12 @@ public class ParseLotteryFiles {
                     }
                     sportsLottery.setLength(sportsLottery.length() - 1);
                     System.out.println(SportsLotteryEnum.getChineseByCode(t_i) + "：" + sportsLottery);
+                    oneData.put(SportsLotteryEnum.getSignByCode(t_i), sportsLottery);
                     t_i = 8;
                 }
             }
             System.out.println();
+            result.add(oneData);
         }
     }
 
@@ -129,8 +136,10 @@ public class ParseLotteryFiles {
      * @param table
      */
     public static void parseWelfareLotteryBody(Elements table) {
+        JSONArray result = new JSONArray();
         Elements tbody_tr = table.select("tbody").select("tr");
         for (Element oneRow : tbody_tr) {
+            JSONObject oneData = new JSONObject();
             Elements tbody_tr_td = oneRow.select("td");
             for (int t_i = 0, t_len = tbody_tr_td.size(); t_i < t_len; t_i++) {
                 Element oneColumn = tbody_tr_td.get(t_i);
@@ -145,14 +154,18 @@ public class ParseLotteryFiles {
                     Element div_blue = column_div.getElementsByClass("qiu-item-wqgg-zjhm-blue").first();
                     welfareLottery.append(div_blue.text());
                     System.out.println(WelfareLotteryEnum.getChineseByCode(t_i) + "：" + welfareLottery);
+                    oneData.put(WelfareLotteryEnum.getSignByCode(t_i), welfareLottery.toString());
                 } else {
                     String title = WelfareLotteryEnum.getChineseByCode(t_i);
                     if (!"N/A".equals(title)) {
                         System.out.println(title + "：" + oneColumn.text());
+                        oneData.put(WelfareLotteryEnum.getSignByCode(t_i), oneColumn.text());
                     }
                 }
             }
             System.out.println();
+            result.add(oneData);
+            // TODO 返回值
         }
     }
 
