@@ -31,5 +31,4 @@ public class SportsLottery {
     private String second_append_num;
     private String second_append_money;
 
-
 }

@@ -19,7 +19,11 @@
     </properties>
 
     <dependencies>
-        
+
+        <dependency>
+            <groupId>cn.com.blueInfo.configuration</groupId>
+            <artifactId>LanxiPavilion-Configuration</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>dom4j</groupId>

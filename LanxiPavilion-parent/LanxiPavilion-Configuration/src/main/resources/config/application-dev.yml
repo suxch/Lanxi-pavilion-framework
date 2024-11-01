@@ -39,6 +39,14 @@ spring:
       # 最长等待事件
       max-wait-millis: 2000
 
+#decorator:
+#  datasource:
+#    p6spy:
+#      #日志格式
+#      log-format: "\ntime:%(executionTime) || sql:%(sql)\n"
+#      #自定义日志类
+#      logging: custom
+#      custom-appender-class: com.example.testinit.config.StdoutLogger
 
 # Mybatis-Plus 配置
 mybatis-plus:

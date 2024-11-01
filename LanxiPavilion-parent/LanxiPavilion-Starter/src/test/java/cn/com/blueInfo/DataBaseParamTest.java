@@ -1,5 +1,7 @@
 package cn.com.blueInfo;
 
+import cn.com.blueInfo.business.lottery.entity.WelfareLottery;
+import cn.com.blueInfo.business.lottery.mapper.WelfareLotteryMapper;
 import cn.com.blueInfo.utils.entity.DataBaseParam;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,9 @@ public class DataBaseParamTest {
     @Autowired
     private DataBaseParam dataBaseParam;
 
+    @Autowired
+    private WelfareLotteryMapper welfareLotteryMapper;
+
     @Test
     public void test() {
         log.info(dataBaseParam.getUrl());
@@ -24,6 +29,11 @@ public class DataBaseParamTest {
         log.info(dataBaseParam.getHost());
         log.info(dataBaseParam.getPort());
         log.info(dataBaseParam.getDatabase());
+    }
+
+    @Test
+    public void addData() {
+        welfareLotteryMapper.insert(new WelfareLottery());
     }
 
 }
