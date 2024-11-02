@@ -43,7 +43,7 @@ public class ParseLotteryFiles {
         startParse(folderName);
     }
 
-    public static void startParse(String folderName) {
+    public static JSONArray startParse(String folderName) {
         File folder = new File(folderName);
         JSONArray allFileData = new JSONArray();
         if (folder.isDirectory()) {
@@ -61,8 +61,7 @@ public class ParseLotteryFiles {
                 }
             }
         }
-        System.out.println(allFileData);
-        System.out.println(allFileData.size());
+        return allFileData;
     }
 
     /**
