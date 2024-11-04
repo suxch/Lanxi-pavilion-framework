@@ -1,10 +1,7 @@
 package cn.com.blueInfo;
 
 import cn.com.blueInfo.business.lottery.ParseLotteryFiles;
-import cn.com.blueInfo.business.lottery.entity.SportsLottery;
-import cn.com.blueInfo.business.lottery.entity.SportsLottery_All;
-import cn.com.blueInfo.business.lottery.entity.WelfareLottery;
-import cn.com.blueInfo.business.lottery.entity.WelfareLottery_All;
+import cn.com.blueInfo.business.lottery.entity.*;
 import cn.com.blueInfo.business.lottery.mapper.SportsLotteryMapper;
 import cn.com.blueInfo.business.lottery.mapper.WelfareLotteryMapper;
 import cn.com.blueInfo.utils.entity.DataBaseParam;
@@ -31,6 +28,12 @@ public class DataBaseParamTest {
     @Autowired
     private SportsLotteryMapper sportsLotteryMapper;
 
+    @Autowired
+    private SportsLotteryParam sportsLotteryParam;
+
+    @Autowired
+    private WelfareLotteryParam welfareLotteryParam;
+
     @Test
     public void test() {
         log.info(dataBaseParam.getUrl());
@@ -42,6 +45,20 @@ public class DataBaseParamTest {
         log.info(dataBaseParam.getHost());
         log.info(dataBaseParam.getPort());
         log.info(dataBaseParam.getDatabase());
+    }
+
+    @Test
+    public void testBusinessParam() {
+        log.info(sportsLotteryParam.getUrl());
+        log.info(sportsLotteryParam.getMethod());
+        log.info("");
+        for (String s_s : sportsLotteryParam.getQuery()) log.info(s_s);
+        log.info(welfareLotteryParam.getUrl());
+        log.info(welfareLotteryParam.getMethod());
+        log.info("");
+        for (String w_s : welfareLotteryParam.getQuery()) log.info(w_s);
+        log.info("");
+        for (String w_s : welfareLotteryParam.getHeader()) log.info(w_s);
     }
 
     @Test
