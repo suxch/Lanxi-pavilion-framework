@@ -164,7 +164,6 @@ public class ParseLotteryFiles {
         //System.out.println(data.toJSONString());
         List<SportsLottery> sportsLotteryList = JSONArray.parseArray(data.toJSONString(), SportsLottery.class);
         List<SportsLottery_All> sportsLotteryAllList = JSONArray.parseArray(data.toJSONString(), SportsLottery_All.class);
-        System.out.println("查看参数");
         return data;
     }
 
@@ -271,7 +270,6 @@ public class ParseLotteryFiles {
         //System.out.println(data.toJSONString());
         List<WelfareLottery> welfareLotteryList = JSONArray.parseArray(data.toJSONString(), WelfareLottery.class);
         List<WelfareLottery_All> welfareLotteryAllList = JSONArray.parseArray(data.toJSONString(), WelfareLottery_All.class);
-        System.out.println("查看参数");
         return data;
     }
 

@@ -46,9 +46,9 @@ public class DataBaseParamTest {
 
     @Test
     public void addData() {
-        WelfareLottery welfareLottery = new WelfareLottery();
-        welfareLottery.setUuid(UUID.randomUUID().toString());
-        welfareLotteryMapper.insert(welfareLottery);
+//        WelfareLottery welfareLottery = new WelfareLottery();
+//        welfareLottery.setUuid(UUID.randomUUID().toString());
+//        welfareLotteryMapper.insert(welfareLottery);
 
         String welfareFolder = "D:" + File.separator +
                 "中国彩票基础数据" + File.separator + "双色球";
@@ -57,15 +57,16 @@ public class DataBaseParamTest {
         saveWelfareData(welfareResultData);
 
         String sportsFolder = "D:" + File.separator +
-                "中国彩票基础数据" + File.separator + "双色球";
+                "中国彩票基础数据" + File.separator + "大乐透";
         // 大乐透返回数据
         JSONArray sportsResultData = ParseLotteryFiles.startParse(sportsFolder);
         saveSportsData(sportsResultData);
-
+        System.out.println("断点");
     }
 
     public void saveWelfareData(JSONArray data) {
         List<WelfareLottery> welfareLotteryList = JSONArray.parseArray(data.toJSONString(), WelfareLottery.class);
+        welfareLotteryMapper.delete(null);
         for (WelfareLottery welfareLottery : welfareLotteryList) {
             welfareLottery.setUuid(UUID.randomUUID().toString());
             int addCount = welfareLotteryMapper.insert(welfareLottery);
@@ -78,6 +79,7 @@ public class DataBaseParamTest {
 
     public void saveSportsData(JSONArray data) {
         List<SportsLottery> sportsLotteryList = JSONArray.parseArray(data.toJSONString(), SportsLottery.class);
+        sportsLotteryMapper.delete(null);
         for (SportsLottery sportsLottery : sportsLotteryList) {
             sportsLottery.setUuid(UUID.randomUUID().toString());
             int addCount = sportsLotteryMapper.insert(sportsLottery);
