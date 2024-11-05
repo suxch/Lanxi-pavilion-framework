@@ -197,8 +197,10 @@ public class HttpClient {
             httpClient = HttpClients.createDefault();
             // 创建httpGet远程连接实例
             HttpGet httpGet = new HttpGet(url);
-            for (int h_i = 0, h_len = headerMap.size(); h_i < h_len; h_i++) {
-
+            if (null != headerMap && !headerMap.isEmpty()) {
+                for (Entry<String, String> entry : headerMap.entrySet()) {
+                    httpGet.addHeader(entry.getKey(), entry.getValue());
+                }
             }
             // 设置请求头信息，鉴权
             httpGet.setHeader("Authorization", "Bearer da3efcbf-0845-4fe3-8aba-ee040be542c0");
