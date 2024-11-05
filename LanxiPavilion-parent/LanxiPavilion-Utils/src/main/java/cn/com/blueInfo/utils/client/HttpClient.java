@@ -1,10 +1,11 @@
 package cn.com.blueInfo.utils.client;
 
+import cn.com.blueInfo.utils.PubFuncUtil;
 import cn.com.blueInfo.utils.entity.BootstrapTable;
 import cn.com.blueInfo.utils.entity.ResultInfo;
-import cn.com.blueInfo.utils.PubFuncUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -29,7 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -57,7 +58,7 @@ public class HttpClient {
         if (requestParam != null && !requestParam.isEmpty())
             paramMap.put("requestParam", requestParam);
 
-        String resultString = doPost(url, paramMap);
+        String resultString = doPost(null, url, paramMap);
         result = JSON.parseObject(resultString, ResultInfo.class);
         System.out.println(result);
         return result;
@@ -111,7 +112,7 @@ public class HttpClient {
         if(param != null){
             paramMap.put("1", param.toJSONString());
         }
-        String resultString = HttpClient.bootstrapTablePost(url, paramMap);
+        String resultString = HttpClient.doPost("bootstrap", url, paramMap);
         result = JSON.parseObject(resultString, BootstrapTable.class);
         return result;
     }
@@ -129,7 +130,7 @@ public class HttpClient {
         BootstrapTable result;
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("requestParam", requestParam);
-        String resultString = HttpClient.doPost(url, paramMap);
+        String resultString = HttpClient.doPost(null, url, paramMap);
         result = JSON.parseObject(resultString, BootstrapTable.class);
         return result;
     }
@@ -176,6 +177,10 @@ public class HttpClient {
         return result;
     }
 
+    public static String doGet(String url) {
+        return doGet(url, null);
+    }
+
     /**
      * get请求
      * @Title: doGet
@@ -183,7 +188,7 @@ public class HttpClient {
      * @return String
      * @throws
      */
-    public static String doGet(String url) {
+    public static String doGet(String url, Map<String, String> headerMap) {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         String result = "";
@@ -192,6 +197,9 @@ public class HttpClient {
             httpClient = HttpClients.createDefault();
             // 创建httpGet远程连接实例
             HttpGet httpGet = new HttpGet(url);
+            for (int h_i = 0, h_len = headerMap.size(); h_i < h_len; h_i++) {
+
+            }
             // 设置请求头信息，鉴权
             httpGet.setHeader("Authorization", "Bearer da3efcbf-0845-4fe3-8aba-ee040be542c0");
             // 设置配置请求参数
@@ -218,6 +226,10 @@ public class HttpClient {
         return result;
     }
 
+    public static String doPost(String url, Map<String, Object> paramMap) {
+        return doPost(null, url, paramMap);
+    }
+
     /**
      * post请求
      * Form Data请求方式
@@ -227,7 +239,7 @@ public class HttpClient {
      * @return String
      * @throws
      */
-    public static String doPost(String url, Map<String, Object> paramMap) {
+    private static String doPost(String type, String url, Map<String, Object> paramMap) {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse httpResponse = null;
         String result = "";
@@ -244,16 +256,18 @@ public class HttpClient {
         // 为httpPost实例设置配置
         httpPost.setConfig(requestConfig);
         // 设置请求头
-        httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        if (StringUtils.isNotEmpty(type) && "bootstrap".equals(type)) {
+            httpPost.addHeader("Content-Type", "application/json");
+        } else {
+            httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        }
         // 封装post请求参数
-        if (null != paramMap && paramMap.size() > 0) {
+        if (null != paramMap && !paramMap.isEmpty()) {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             // 通过map集成entrySet方法获取entity
             Set<Entry<String, Object>> entrySet = paramMap.entrySet();
             // 循环遍历，获取迭代器
-            Iterator<Entry<String, Object>> iterator = entrySet.iterator();
-            while (iterator.hasNext()) {
-                Entry<String, Object> mapEntry = iterator.next();
+            for (Entry<String, Object> mapEntry : entrySet) {
                 nvps.add(new BasicNameValuePair(mapEntry.getKey(), mapEntry.getValue().toString()));
             }
 
@@ -288,93 +302,6 @@ public class HttpClient {
      * @return String
      * @throws
      */
-    public static String doFilePost_zzy(String url, HttpServletRequest request) {
-        CloseableHttpClient httpClient = null;
-        CloseableHttpResponse httpResponse = null;
-        String result = "";
-        // 创建httpClient实例
-        httpClient = HttpClients.createDefault();
-        // 创建httpPost远程连接实例
-        HttpPost httpPost = new HttpPost(url);
-        // 配置请求参数实例
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(35000)// 设置连接主机服务超时时间
-                .setConnectionRequestTimeout(35000)// 设置连接请求超时时间
-                .setSocketTimeout(60000)// 设置读取数据连接超时时间
-                .build();
-        // 为httpPost实例设置配置
-        httpPost.setConfig(requestConfig);
-        MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create();
-        reqEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        reqEntity.setCharset(Charset.forName("UTF-8"));
-        //String encoderMessage;
-        //try {
-        String userLoginName = request.getParameter("userLoginName");
-        //encoderMessage = URLEncoder.encode(userLoginName,"UTF-8");
-        httpPost.addHeader("Authorization", userLoginName);
-		/*} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}*/
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-        if (multipartResolver.isMultipart(request)) {
-            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-            // 获取multiRequest 中所有的文件名
-            Iterator<?> iter = multiRequest.getFileNames();
-            while (iter.hasNext()) {
-                List<MultipartFile> file = multiRequest.getFiles(iter.next().toString());
-                for (int i = 0; i < file.size(); i++) {
-                    String fileType = file.get(i).getOriginalFilename();
-                    InputStream input = null;
-                    try {
-                        input = file.get(i).getInputStream();
-                    } catch (IOException E) {
-                        E.printStackTrace();
-                    }
-                    try {
-                        reqEntity.addBinaryBody("file", input, ContentType.APPLICATION_OCTET_STREAM, fileType);
-                        String piid = request.getParameter("piid");
-                        String uploadPerson = request.getParameter("userName");
-                        String templeteId = request.getParameter("templateId");
-                        String nodeId = request.getParameter("nodeId");
-                        String domainCode = request.getParameter("domainCode");
-                        String applicationCode = request.getParameter("applicationCode");
-                        String userMessage = piid + "," + uploadPerson + "," + templeteId + "," + nodeId + "," + domainCode + "," + applicationCode;
-                        reqEntity.addTextBody("userMessage", userMessage);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        HttpEntity multipart = reqEntity.build();
-        httpPost.setEntity(multipart);
-        // }
-        try {
-            // httpClient对象执行post请求,并返回响应参数对象
-            httpResponse = httpClient.execute(httpPost);
-            // 从响应对象中获取响应内容
-            HttpEntity entity = httpResponse.getEntity();
-            result = EntityUtils.toString(entity, "UTF-8");
-            System.out.println(result);
-        } catch (ClientProtocolException e) {
-            throw new RuntimeException("客户端协议异常", e);
-        } catch (IOException e) {
-            throw new RuntimeException("返回数据解析异常", e);
-        } finally {
-            PubFuncUtil.closeResource(httpResponse, httpClient);
-        }
-        return result;
-
-    }
-
-    /**
-     * 文件上传post
-     * @Title: doFilePost
-     * @param url
-     * @param request
-     * @return String
-     * @throws
-     */
     public static String doFilePost(String url, HttpServletRequest request) {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse httpResponse = null;
@@ -393,7 +320,7 @@ public class HttpClient {
         httpPost.setConfig(requestConfig);
         MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create();
         reqEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        reqEntity.setCharset(Charset.forName("UTF-8"));
+        reqEntity.setCharset(StandardCharsets.UTF_8);
 		/*
 		String userLoginName = request.getParameter("userLoginName");
 		httpPost.addHeader("Authorization", userLoginName);*/
@@ -402,18 +329,20 @@ public class HttpClient {
         if (multipartResolver.isMultipart(request)) {
             MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
             // 获取multiRequest 中所有的文件名
-            Iterator<String> iter = multiRequest.getFileNames();
+            Iterator<?> iter = multiRequest.getFileNames();
             while (iter.hasNext()) {
                 List<MultipartFile> fileList = multiRequest.getFiles(iter.next().toString());
-                String fileName = fileList.get(0).getOriginalFilename();
-                InputStream input = null;
-                try {
-                    input = fileList.get(0).getInputStream();
-                    reqEntity.addBinaryBody("file", input, ContentType.APPLICATION_OCTET_STREAM, fileName);
-                    String requestData = request.getParameter("requestParam");
-                    reqEntity.addTextBody("requestParam", requestData);
-                } catch (IOException E) {
-                    E.printStackTrace();
+                for (int f_i = 0, f_len = fileList.size(); f_i < f_len; f_i++) {
+                    String fileName = fileList.get(0).getOriginalFilename();
+                    InputStream input = null;
+                    try {
+                        input = fileList.get(0).getInputStream();
+                        reqEntity.addBinaryBody("file", input, ContentType.APPLICATION_OCTET_STREAM, fileName);
+                        String requestData = request.getParameter("requestParam");
+                        reqEntity.addTextBody("requestParam", requestData);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -537,68 +466,6 @@ public class HttpClient {
             }
         }
         return filename;
-    }
-
-    /**
-     * post请求
-     * Request Payload请求方式
-     * @Title: bootstrapTablePost
-     * @param url
-     * @param paramMap
-     * @return String
-     * @throws
-     */
-    public static String bootstrapTablePost(String url, Map<String, Object> paramMap) {
-        CloseableHttpClient httpClient = null;
-        CloseableHttpResponse httpResponse = null;
-        String result = "";
-        // 创建httpClient实例
-        httpClient = HttpClients.createDefault();
-        // 创建httpPost远程连接实例
-        HttpPost httpPost = new HttpPost(url);
-        // 配置请求参数实例
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(35000)// 设置连接主机服务超时时间
-                .setConnectionRequestTimeout(35000)// 设置连接请求超时时间
-                .setSocketTimeout(60000)// 设置读取数据连接超时时间
-                .build();
-        // 为httpPost实例设置配置
-        httpPost.setConfig(requestConfig);
-        // 设置请求头
-        httpPost.addHeader("Content-Type", "application/json");
-        // 封装post请求参数
-        if (null != paramMap && paramMap.size() > 0) {
-            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-            // 通过map集成entrySet方法获取entity
-            Set<Entry<String, Object>> entrySet = paramMap.entrySet();
-            // 循环遍历，获取迭代器
-            Iterator<Entry<String, Object>> iterator = entrySet.iterator();
-            while (iterator.hasNext()) {
-                Entry<String, Object> mapEntry = iterator.next();
-                nvps.add(new BasicNameValuePair(mapEntry.getKey(), mapEntry.getValue().toString()));
-            }
-
-            // 为httpPost设置封装好的请求参数
-            try {
-                httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            // httpClient对象执行post请求,并返回响应参数对象
-            httpResponse = httpClient.execute(httpPost);
-            // 从响应对象中获取响应内容
-            HttpEntity entity = httpResponse.getEntity();
-            result = EntityUtils.toString(entity);
-        } catch (ClientProtocolException e) {
-            throw new RuntimeException("客户端协议异常", e);
-        } catch (IOException e) {
-            throw new RuntimeException("返回数据解析异常", e);
-        } finally {
-            PubFuncUtil.closeResource(httpResponse, httpClient);
-        }
-        return result;
     }
 
 }
