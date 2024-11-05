@@ -7,6 +7,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Data
 @Component
 @PropertySource(value = "classpath:config/business.yml", factory = YamlFileLoader.class)
@@ -37,6 +40,19 @@ public class WelfareLotteryParam {
             }
         }
         return result.substring(0, result.length() - 1);
+    }
+
+    public Map<String, String> getHeader() {
+        Map<String, String> result = new LinkedHashMap<>();
+        for (String oneHeader : header) {
+            String[] headerInfo = oneHeader.split(":");
+            if (headerInfo.length > 2) {
+                result.put(oneHeader.substring(0, oneHeader.indexOf(":")), oneHeader.substring(oneHeader.indexOf(":") + 1));
+            } else {
+                result.put(headerInfo[0], headerInfo[1]);
+            }
+        }
+        return result;
     }
 
 }

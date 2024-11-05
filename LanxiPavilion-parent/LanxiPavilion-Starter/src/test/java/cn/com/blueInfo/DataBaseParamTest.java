@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Log4j2
@@ -58,7 +59,10 @@ public class DataBaseParamTest {
         log.info("");
         for (String w_s : welfareLotteryParam.getQuery()) log.info(w_s);
         log.info("");
-        for (String w_s : welfareLotteryParam.getHeader()) log.info(w_s);
+        for (Map.Entry<String, String> entry : welfareLotteryParam.getHeader().entrySet()) {
+            log.info(entry.getKey());
+            log.info(entry.getValue());
+        }
     }
 
     @Test
