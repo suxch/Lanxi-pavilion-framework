@@ -26,6 +26,7 @@ public class SportsLotteryServiceImpl implements SportsLotteryService {
 
     @Override
     public void addSportsLotteryDataForHttp() {
+        sportsLotteryMapper.delete(null);
         String result = HttpClient.doGet(sportsLotteryParam.getUrl(1, 30), sportsLotteryParam.getHeader());
         JSONObject resultData = JSON.parseObject(result);
         JSONObject resultValue = resultData.getJSONObject("value");

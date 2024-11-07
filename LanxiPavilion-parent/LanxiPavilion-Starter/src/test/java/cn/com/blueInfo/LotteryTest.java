@@ -22,4 +22,9 @@ public class LotteryTest {
         sportsLotteryService.addSportsLotteryDataForHttp();
     }
 
+    @Test
+    public void testW() {
+        welfareLotteryService.addWelfareLotteryDataForHttp();
+    }
+
 }

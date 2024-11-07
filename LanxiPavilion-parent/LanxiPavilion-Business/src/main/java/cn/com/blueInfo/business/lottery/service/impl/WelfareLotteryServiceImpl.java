@@ -26,6 +26,7 @@ public class WelfareLotteryServiceImpl implements WelfareLotteryService {
 
     @Override
     public void addWelfareLotteryDataForHttp() {
+        welfareLotteryMapper.delete(null);
         String result = HttpClient.doGet(welfareLotteryParam.getUrl(1, 30), welfareLotteryParam.getHeader());
         JSONObject resultData = JSON.parseObject(result);
         log.info(resultData);
