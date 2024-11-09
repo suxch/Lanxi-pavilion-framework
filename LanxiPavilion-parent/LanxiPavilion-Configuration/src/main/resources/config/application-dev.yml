@@ -20,7 +20,7 @@ spring:
     #driver-class-name: oracle.jdbc.driver.OracleDriver
     # 数据库地址
     #url: jdbc:sqlserver://127.0.0.1:1433;databaseName=gqys;
-    url: jdbc:mysql://127.0.0.1:3306/suxch?allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3306/suxch?allowMultiQueries=true&rewriteBatchedStatements=true
     #url: jdbc:oracle:thin:@172.172.103.229:1521:orcl2
     # 数据库用户名
     username: root
