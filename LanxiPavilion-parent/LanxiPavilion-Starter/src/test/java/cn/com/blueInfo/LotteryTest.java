@@ -27,4 +27,14 @@ public class LotteryTest {
         welfareLotteryService.addWelfareLotteryDataForHttp();
     }
 
+    @Test
+    public void testQuery() {
+        welfareLotteryService.updateLatestData();
+    }
+
+    @Test
+    public void testA() {
+        welfareLotteryService.createWelfareLotteryData();
+    }
+
 }

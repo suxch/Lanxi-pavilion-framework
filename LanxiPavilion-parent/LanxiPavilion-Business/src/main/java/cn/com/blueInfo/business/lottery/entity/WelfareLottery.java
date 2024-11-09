@@ -24,10 +24,10 @@ public class WelfareLottery {
     private String red5;
     private String red6;
     private String blue;
-    private String lottery_info;
-    private String first_num;
-    private String first_money;
-    private String second_num;
-    private String second_money;
+    private String lotteryInfo;
+    private String firstNum;
+    private String firstMoney;
+    private String secondNum;
+    private String secondMoney;
 
 }

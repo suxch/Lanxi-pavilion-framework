@@ -8,6 +8,10 @@ import cn.com.blueInfo.utils.client.HttpClient;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +20,8 @@ import java.util.UUID;
 
 @Log4j2
 @Service
-public class WelfareLotteryServiceImpl implements WelfareLotteryService {
+public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper, WelfareLottery>
+        implements WelfareLotteryService {
 
     @Autowired
     private WelfareLotteryMapper welfareLotteryMapper;
@@ -50,6 +55,27 @@ public class WelfareLotteryServiceImpl implements WelfareLotteryService {
         }
     }
 
+    @Override
+    public void createWelfareLotteryData() {
+        double a = Math.random();
+        System.out.println(a);
+    }
+
+    @Override
+    public void updateLatestData() {
+        LambdaQueryWrapper<WelfareLottery> wrapper = new LambdaQueryWrapper<WelfareLottery>()
+                .select(WelfareLottery::getUuid, WelfareLottery::getIssue, WelfareLottery::getDate)
+                .orderByDesc(WelfareLottery::getDate);
+//        List<WelfareLottery> welfareLotteryList = welfareLotteryMapper.selectList(wrapper);
+
+        IPage<WelfareLottery> pageParam = new Page<WelfareLottery>();
+        pageParam.setCurrent(1);
+        pageParam.setSize(10);
+
+        IPage<WelfareLottery> welfareLotteryIPage = welfareLotteryMapper.selectPage(pageParam, wrapper);
+        log.info(welfareLotteryIPage.getRecords().size());
+    }
+
     private void addDataToDatabase(JSONObject resultData) {
         JSONArray data = resultData.getJSONArray("result");
         for (int d_i = 0, d_len = data.size(); d_i < d_len; d_i++) {
@@ -77,19 +103,19 @@ public class WelfareLotteryServiceImpl implements WelfareLotteryService {
                 lotteryInfo.append(redBall).append("-");
             }
             lotteryInfo.append("--").append(blueBall);
-            welfareLottery.setLottery_info(lotteryInfo.toString());
+            welfareLottery.setLotteryInfo(lotteryInfo.toString());
 
             JSONArray prizeInfo = oneData.getJSONArray("prizegrades");
             for (int p_i = 0, p_len = prizeInfo.size(); p_i < p_len; p_i++) {
                 JSONObject onePrize = prizeInfo.getJSONObject(p_i);
                 Integer prizeType = onePrize.getInteger("type");
                 if (prizeType == 1) {
-                    welfareLottery.setFirst_num(onePrize.getString("typenum"));
-                    welfareLottery.setFirst_money(onePrize.getString("typemoney"));
+                    welfareLottery.setFirstNum(onePrize.getString("typenum"));
+                    welfareLottery.setFirstMoney(onePrize.getString("typemoney"));
                 }
                 if (prizeType == 2) {
-                    welfareLottery.setSecond_num(onePrize.getString("typenum"));
-                    welfareLottery.setSecond_money(onePrize.getString("typemoney"));
+                    welfareLottery.setSecondNum(onePrize.getString("typenum"));
+                    welfareLottery.setSecondMoney(onePrize.getString("typemoney"));
                 }
             }
             log.info(welfareLottery.toString());

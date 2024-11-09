@@ -84,27 +84,27 @@ public class SportsLotteryServiceImpl implements SportsLotteryService {
                 }
             }
             lotteryInfo.setLength(lotteryInfo.length() - 1);
-            sportsLottery.setLottery_info(lotteryInfo.toString());
+            sportsLottery.setLotteryInfo(lotteryInfo.toString());
 
             JSONArray prizeInfo = oneData.getJSONArray("prizeLevelList");
             for (int p_i = 0, p_len = prizeInfo.size(); p_i < p_len; p_i++) {
                 JSONObject onePrize = prizeInfo.getJSONObject(p_i);
                 Integer prizeType = onePrize.getInteger("sort");
                 if (prizeType == 101) {
-                    sportsLottery.setFirst_base_num(onePrize.getString("stakeCount"));
-                    sportsLottery.setFirst_base_money(onePrize.getString("stakeAmountFormat"));
+                    sportsLottery.setFirstBaseNum(onePrize.getString("stakeCount"));
+                    sportsLottery.setFirstBaseMoney(onePrize.getString("stakeAmountFormat"));
                 }
                 if (prizeType == 201) {
-                    sportsLottery.setFirst_append_num(onePrize.getString("stakeCount"));
-                    sportsLottery.setFirst_append_money(onePrize.getString("stakeAmountFormat"));
+                    sportsLottery.setFirstAppendNum(onePrize.getString("stakeCount"));
+                    sportsLottery.setFirstAppendMoney(onePrize.getString("stakeAmountFormat"));
                 }
                 if (prizeType == 301) {
-                    sportsLottery.setSecond_base_num(onePrize.getString("stakeCount"));
-                    sportsLottery.setSecond_base_money(onePrize.getString("stakeAmountFormat"));
+                    sportsLottery.setSecondBaseNum(onePrize.getString("stakeCount"));
+                    sportsLottery.setSecondBaseMoney(onePrize.getString("stakeAmountFormat"));
                 }
                 if (prizeType == 401) {
-                    sportsLottery.setSecond_append_num(onePrize.getString("stakeCount"));
-                    sportsLottery.setSecond_append_money(onePrize.getString("stakeAmountFormat"));
+                    sportsLottery.setSecondAppendNum(onePrize.getString("stakeCount"));
+                    sportsLottery.setSecondAppendMoney(onePrize.getString("stakeAmountFormat"));
                 }
             }
             log.info(sportsLottery.toString());

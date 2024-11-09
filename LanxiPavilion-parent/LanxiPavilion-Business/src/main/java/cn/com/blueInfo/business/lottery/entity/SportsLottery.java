@@ -1,5 +1,7 @@
 package cn.com.blueInfo.business.lottery.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class SportsLottery {
 
+    @TableId(value = "uuid", type = IdType.INPUT)
     private String uuid;
     private String issue;
     private String date;
@@ -21,14 +24,14 @@ public class SportsLottery {
     private String red5;
     private String blue1;
     private String blue2;
-    private String lottery_info;
-    private String first_base_num;
-    private String first_base_money;
-    private String first_append_num;
-    private String first_append_money;
-    private String second_base_num;
-    private String second_base_money;
-    private String second_append_num;
-    private String second_append_money;
+    private String lotteryInfo;
+    private String firstBaseNum;
+    private String firstBaseMoney;
+    private String firstAppendNum;
+    private String firstAppendMoney;
+    private String secondBaseNum;
+    private String secondBaseMoney;
+    private String secondAppendNum;
+    private String secondAppendMoney;
 
 }
