@@ -37,4 +37,9 @@ public class LotteryTest {
         welfareLotteryService.createWelfareLotteryData();
     }
 
+    @Test
+    public void createWelfareLotteryInfo() {
+        welfareLotteryService.createLotteryInfo();
+    }
+
 }

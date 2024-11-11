@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
 import java.util.UUID;
 
 @Log4j2
@@ -74,6 +75,14 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
 
         IPage<WelfareLottery> welfareLotteryIPage = welfareLotteryMapper.selectPage(pageParam, wrapper);
         log.info(welfareLotteryIPage.getRecords().size());
+    }
+
+    @Override
+    public void createLotteryInfo() {
+        Random random = new Random();
+        for (int i = 0, len = 33; i < len; i++) {
+            System.out.println(random.nextInt(34));
+        }
     }
 
     private void addDataToDatabase(JSONObject resultData) {
