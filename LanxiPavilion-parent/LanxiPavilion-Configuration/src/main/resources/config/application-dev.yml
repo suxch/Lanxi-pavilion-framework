@@ -54,7 +54,7 @@ mybatis-plus:
   mapper-locations: classpath:mybatis/**.xml
   # 日志输出实现类
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     # 枚举转换方式
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
 

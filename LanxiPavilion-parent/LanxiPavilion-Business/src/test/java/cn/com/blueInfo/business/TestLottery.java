@@ -3,10 +3,60 @@ package cn.com.blueInfo.business;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 @Log4j2
 public class TestLottery {
+
+    @Test
+    public void redBalls() {
+        int n = 16;
+        int r = 1;
+        List<List<Integer>> redBallCombinations = generateCombinations(n, r);
+        List<Integer> blueBalls = generateBlueBalls();
+
+        Collections.shuffle(redBallCombinations);
+
+//        for (List<Integer> combination : redBallCombinations) {
+//            System.out.println(combination);
+//        }
+        for (List<Integer> redBalls : redBallCombinations) {
+            for (Integer blueBall : blueBalls) {
+                System.out.println(redBalls + " + " + blueBall);
+            }
+        }
+    }
+
+    private List<List<Integer>> generateCombinations(int n, int r) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> combination = new ArrayList<>();
+        generateCombinationsInternal(n, r, 1, combination, result);
+        return result;
+    }
+
+    private void generateCombinationsInternal(int n, int r, int start, List<Integer> combination, List<List<Integer>> result) {
+        if (combination.size() == r) {
+            result.add(new ArrayList<>(combination));  // 直接添加当前组合对象引用，后续统一处理复制等操作
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            combination.add(i);
+            generateCombinationsInternal(n, r, i + 1, combination, result);
+            combination.remove(combination.size() - 1);
+        }
+    }
+
+    // 生成1到16的蓝球列表
+    public static List<Integer> generateBlueBalls() {
+        List<Integer> blueBalls = new ArrayList<>();
+        for (int i = 1; i <= 16; i++) {
+            blueBalls.add(i);
+        }
+        return blueBalls;
+    }
 
     @Test
     public void lottery() {
