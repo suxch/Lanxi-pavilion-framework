@@ -5,5 +5,39 @@
     <delete id="delAllData">
         delete from welfare_lottery;
     </delete>
+    
+    <insert id="customBatchInsert">
+        INSERT INTO ${tableName} (uuid, red1, red2, red3, red4, red5, red6, blue, lottery_info)
+        VALUES
+            <foreach collection="list" item="wel" separator=",">
+                (#{wel.uuid}, #{wel.red1}, #{wel.red2}, #{wel.red3}, #{wel.red4}, #{wel.red5}, #{wel.red6}, #{wel.blue}, #{wel.lotteryInfo})
+            </foreach>
+    </insert>
+
+    <update id="createWelfareSubTable">
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+            `uuid` varchar(64),
+            `issue` varchar(16),
+            `date` varchar(32),
+            `red1` varchar(2),
+            `red2` varchar(2),
+            `red3` varchar(2),
+            `red4` varchar(2),
+            `red5` varchar(2),
+            `red6` varchar(2),
+            `blue` varchar(2),
+            `lottery_info` varchar(255),
+            `first_num` varchar(4),
+            `first_money` varchar(255),
+            `second_num` varchar(4),
+            `second_money` varchar(255),
+            `countId` int(10) NOT NULL AUTO_INCREMENT,
+            PRIMARY KEY (`countId`) USING BTREE
+        )
+    </update>
+
+    <update id="updateAutoIncrement">
+        ALTER TABLE ${tableName} AUTO_INCREMENT = ${count}
+    </update>
 
 </mapper>

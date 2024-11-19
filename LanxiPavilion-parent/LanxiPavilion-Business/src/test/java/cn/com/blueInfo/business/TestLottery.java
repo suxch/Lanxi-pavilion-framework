@@ -12,6 +12,11 @@ import java.util.Random;
 public class TestLottery {
 
     @Test
+    public void testInteger() {
+        System.out.println(0%50000);
+    }
+
+    @Test
     public void redBalls() {
         int n = 16;
         int r = 1;

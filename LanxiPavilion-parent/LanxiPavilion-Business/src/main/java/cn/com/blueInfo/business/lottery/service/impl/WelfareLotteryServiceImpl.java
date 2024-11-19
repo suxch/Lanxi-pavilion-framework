@@ -85,21 +85,64 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         Collections.shuffle(redBallList);
         List<List<Integer>> blueBallList = LotteryUtils.generateCombinations(16, 1);
         Collections.shuffle(blueBallList);
-        int count = 0;
+
+        String tableName = "welfare_lottery";
         List<WelfareLottery> welfareLotteryList = new ArrayList<>();
-        for (List<Integer> redBall : redBallList) {
+        for (int r_i = 0, r_len = redBallList.size(); r_i < r_len; r_i++) {
+            List<Integer> redBall = redBallList.get(r_i);
             for (List<Integer> blueBall : blueBallList) {
                 welfareLotteryList.add(batchSaveCreateLotteryInfo(redBall, blueBall));
             }
-            if (saveBatch(welfareLotteryList)) {
+            // 第一次存储的时候需要创建表
+            if (r_i % 50000 == 0) {
+                tableName = getTableNameCount(tableName);
+                baseMapper.createWelfareSubTable(tableName);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (r_i != 0) {
+                    baseMapper.updateAutoIncrement(tableName, "" + ((r_i * 16) + 1));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            int insertCount = baseMapper.customBatchInsert(tableName, welfareLotteryList);
+            if (insertCount != 0) {
                 welfareLotteryList.clear();
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
             }
         }
+//        for (List<Integer> redBall : redBallList) {
+//            for (List<Integer> blueBall : blueBallList) {
+//                welfareLotteryList.add(batchSaveCreateLotteryInfo(redBall, blueBall));
+//            }
+//            if (saveBatch(welfareLotteryList)) {
+//                welfareLotteryList.clear();
+////                try {
+////                    Thread.sleep(100);
+////                } catch (InterruptedException e) {
+////                    throw new RuntimeException(e);
+////                }
+//            }
+//        }
+    }
+
+    private String getTableNameCount(String tableName) {
+        String result = "";
+        String[] names = tableName.split("_");
+        if (names.length == 2) {
+            result = tableName + "_01";
+        } else {
+            int tableCount = Integer.parseInt(names[2]);
+            tableCount++;
+            result = tableName.substring(0, tableName.length() - 2)
+                    + (String.valueOf(tableCount).length() == 1 ? "0" + tableCount : "" + tableCount);
+        }
+        return result;
     }
 
     private WelfareLottery batchSaveCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
