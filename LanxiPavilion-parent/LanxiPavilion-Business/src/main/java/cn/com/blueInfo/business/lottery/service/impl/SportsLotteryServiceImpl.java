@@ -4,19 +4,25 @@ import cn.com.blueInfo.business.lottery.entity.SportsLottery;
 import cn.com.blueInfo.business.lottery.entity.SportsLotteryParam;
 import cn.com.blueInfo.business.lottery.mapper.SportsLotteryMapper;
 import cn.com.blueInfo.business.lottery.service.SportsLotteryService;
+import cn.com.blueInfo.business.lottery.util.LotteryUtils;
 import cn.com.blueInfo.utils.client.HttpClient;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Log4j2
 @Service
-public class SportsLotteryServiceImpl implements SportsLotteryService {
+public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, SportsLottery>
+        implements SportsLotteryService {
 
     @Autowired
     private SportsLotteryMapper sportsLotteryMapper;
@@ -50,6 +56,162 @@ public class SportsLotteryServiceImpl implements SportsLotteryService {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Override
+    public void createLotteryInfo() {
+        List<List<Integer>> redBallList = LotteryUtils.generateCombinations(35, 5);
+        Collections.shuffle(redBallList);
+        List<List<Integer>> blueBallList = LotteryUtils.generateCombinations(12, 2);
+        Collections.shuffle(blueBallList);
+
+        System.out.println(redBallList.size() + " " + blueBallList.size());
+
+        createLotteryInfo1(redBallList, blueBallList);
+
+    }
+
+    private void createLotteryInfo1(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
+        String tableName = "sports_lottery_1";
+        List<String> lotteryInfoList = new ArrayList<>();
+        for (List<Integer> redBall : redBallList) {
+            for (List<Integer> blueBall : blueBallList) {
+                lotteryInfoList.add(getCreateLotteryInfo(redBall, blueBall));
+            }
+        }
+
+        Collections.shuffle(lotteryInfoList);
+
+        List<SportsLottery> sportsLotteryList = new ArrayList<>();
+        for (int l_i = 0, l_len = lotteryInfoList.size(); l_i < l_len; l_i++) {
+            int index = l_i + 1;
+            String lotteryInfo = lotteryInfoList.get(l_i);
+            sportsLotteryList.add(createSportsLotteryInfo(lotteryInfo));
+
+            // 第一次存储的时候需要创建表
+            if (l_i % 990000 == 0) {
+                tableName = getTableNameCount(tableName);
+                baseMapper.createSportsSubTable(tableName);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (l_i != 0) {
+                    baseMapper.updateAutoIncrement(tableName, "" + (l_i + 1));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            if (index % 80 == 0 || l_i == l_len - 1) {
+                int insertCount = baseMapper.customBatchInsert(tableName, sportsLotteryList);
+                if (insertCount != 0) {
+                    sportsLotteryList.clear();
+                }
+            }
+        }
+
+    }
+
+    private SportsLottery createSportsLotteryInfo(String lotteryInfo) {
+        SportsLottery sportsLottery = new SportsLottery();
+        sportsLottery.setUuid(UUID.randomUUID().toString());
+        String[] lotteryInfoArray = lotteryInfo.split("---");
+        String redBall = lotteryInfoArray[0];
+        String blueBall = lotteryInfoArray[1];
+        String[] redBallArray = redBall.split("-");
+        String[] blueBallArray = blueBall.split("-");
+        sportsLottery.setRed1(number2String(Integer.valueOf(redBallArray[0])));
+        sportsLottery.setRed2(number2String(Integer.valueOf(redBallArray[1])));
+        sportsLottery.setRed3(number2String(Integer.valueOf(redBallArray[2])));
+        sportsLottery.setRed4(number2String(Integer.valueOf(redBallArray[3])));
+        sportsLottery.setRed5(number2String(Integer.valueOf(redBallArray[4])));
+        sportsLottery.setBlue1(number2String(Integer.valueOf(blueBallArray[0])));
+        sportsLottery.setBlue2(number2String(Integer.valueOf(blueBallArray[1])));
+        sportsLottery.setLotteryInfo(lotteryInfo);
+        return sportsLottery;
+    }
+
+    private void createLotteryInfo(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
+        String tableName = "sports_lottery_0";
+
+        List<SportsLottery> sportsLotteryList = new ArrayList<>();
+        for (int r_i = 0, r_len = redBallList.size(); r_i < r_len; r_i++) {
+            List<Integer> redBall = redBallList.get(r_i);
+            for (List<Integer> blueBall : blueBallList) {
+                sportsLotteryList.add(batchSaveCreateLotteryInfo(redBall, blueBall));
+            }
+            // 第一次存储的时候需要创建表
+            if (r_i % 15000 == 0) {
+                tableName = getTableNameCount(tableName);
+                baseMapper.createSportsSubTable(tableName);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (r_i != 0) {
+                    baseMapper.updateAutoIncrement(tableName, "" + ((r_i * 66) + 1));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            int insertCount = baseMapper.customBatchInsert(tableName, sportsLotteryList);
+            if (insertCount != 0) {
+                sportsLotteryList.clear();
+            }
+        }
+    }
+
+    private SportsLottery batchSaveCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
+        SportsLottery sportsLottery = new SportsLottery();
+        sportsLottery.setUuid(UUID.randomUUID().toString());
+        sportsLottery.setRed1(number2String(redBall.get(0)));
+        sportsLottery.setRed2(number2String(redBall.get(1)));
+        sportsLottery.setRed3(number2String(redBall.get(2)));
+        sportsLottery.setRed4(number2String(redBall.get(3)));
+        sportsLottery.setRed5(number2String(redBall.get(4)));
+        sportsLottery.setBlue1(number2String(blueBall.get(0)));
+        sportsLottery.setBlue2(number2String(blueBall.get(1)));
+        sportsLottery.setLotteryInfo(getCreateLotteryInfo(redBall, blueBall));
+        return sportsLottery;
+    }
+
+    private String getCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
+        StringBuilder lotteryInfo = new StringBuilder();
+        for (Integer num : redBall) {
+            lotteryInfo.append(number2String(num)).append("-");
+        }
+        lotteryInfo.append("--");
+        for (Integer num : blueBall) {
+            lotteryInfo.append(number2String(num)).append("-");
+        }
+        lotteryInfo.setLength(lotteryInfo.length() - 1);
+        return lotteryInfo.toString();
+    }
+
+    private String number2String(Integer number) {
+        return String.valueOf(number).length() == 1 ? "0" + number : number + "";
+    }
+
+    private String getTableNameCount(String tableName) {
+        String result = "";
+        String[] names = tableName.split("_");
+        if (names.length == 3) {
+            result = tableName + "_01";
+        } else {
+            int tableCount = Integer.parseInt(names[3]);
+            tableCount++;
+            result = tableName.substring(0, tableName.length() - 2)
+                    + (String.valueOf(tableCount).length() == 1 ? "0" + tableCount : "" + tableCount);
+        }
+        return result;
     }
 
     private void addDataToDatabase(JSONObject resultData) {

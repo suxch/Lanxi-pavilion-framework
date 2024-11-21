@@ -86,7 +86,75 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         List<List<Integer>> blueBallList = LotteryUtils.generateCombinations(16, 1);
         Collections.shuffle(blueBallList);
 
-        String tableName = "welfare_lottery";
+        createLotteryInfo1(redBallList, blueBallList);
+
+    }
+
+    private void createLotteryInfo1(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
+        String tableName = "welfare_lottery_1";
+        List<String> lotteryInfoList = new ArrayList<>();
+        for (List<Integer> redBall : redBallList) {
+            for (List<Integer> blueBall : blueBallList) {
+                lotteryInfoList.add(getCreateLotteryInfo(redBall, blueBall));
+            }
+        }
+
+        Collections.shuffle(lotteryInfoList);
+
+        List<WelfareLottery> welfareLotteryList = new ArrayList<>();
+        for (int l_i = 0, l_len = lotteryInfoList.size(); l_i < l_len; l_i++) {
+            int index = l_i + 1;
+            String lotteryInfo = lotteryInfoList.get(l_i);
+            welfareLotteryList.add(createWelfareLotteryInfo(lotteryInfo));
+
+            // 第一次存储的时候需要创建表
+            if (l_i % 800000 == 0) {
+                tableName = getTableNameCount(tableName);
+                baseMapper.createWelfareSubTable(tableName);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (l_i != 0) {
+                    baseMapper.updateAutoIncrement(tableName, "" + (l_i + 1));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            if (index % 80 == 0 || l_i == l_len - 1) {
+                int insertCount = baseMapper.customBatchInsert(tableName, welfareLotteryList);
+                if (insertCount != 0) {
+                    welfareLotteryList.clear();
+                }
+            }
+        }
+
+    }
+
+    private WelfareLottery createWelfareLotteryInfo(String lotteryInfo) {
+        WelfareLottery welfareLottery = new WelfareLottery();
+        welfareLottery.setUuid(UUID.randomUUID().toString());
+        String[] lotteryInfoArray = lotteryInfo.split("---");
+        String redBall = lotteryInfoArray[0];
+        String blueBall = lotteryInfoArray[1];
+        String[] redBallArray = redBall.split("-");
+        welfareLottery.setRed1(number2String(Integer.valueOf(redBallArray[0])));
+        welfareLottery.setRed2(number2String(Integer.valueOf(redBallArray[1])));
+        welfareLottery.setRed3(number2String(Integer.valueOf(redBallArray[2])));
+        welfareLottery.setRed4(number2String(Integer.valueOf(redBallArray[3])));
+        welfareLottery.setRed5(number2String(Integer.valueOf(redBallArray[4])));
+        welfareLottery.setRed6(number2String(Integer.valueOf(redBallArray[5])));
+        welfareLottery.setBlue(number2String(Integer.valueOf(blueBall)));
+        welfareLottery.setLotteryInfo(lotteryInfo);
+        return welfareLottery;
+    }
+
+    private void createLotteryInfo(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
+        String tableName = "welfare_lottery_0";
         List<WelfareLottery> welfareLotteryList = new ArrayList<>();
         for (int r_i = 0, r_len = redBallList.size(); r_i < r_len; r_i++) {
             List<Integer> redBall = redBallList.get(r_i);
@@ -116,28 +184,15 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
                 welfareLotteryList.clear();
             }
         }
-//        for (List<Integer> redBall : redBallList) {
-//            for (List<Integer> blueBall : blueBallList) {
-//                welfareLotteryList.add(batchSaveCreateLotteryInfo(redBall, blueBall));
-//            }
-//            if (saveBatch(welfareLotteryList)) {
-//                welfareLotteryList.clear();
-////                try {
-////                    Thread.sleep(100);
-////                } catch (InterruptedException e) {
-////                    throw new RuntimeException(e);
-////                }
-//            }
-//        }
     }
 
     private String getTableNameCount(String tableName) {
         String result = "";
         String[] names = tableName.split("_");
-        if (names.length == 2) {
+        if (names.length == 3) {
             result = tableName + "_01";
         } else {
-            int tableCount = Integer.parseInt(names[2]);
+            int tableCount = Integer.parseInt(names[3]);
             tableCount++;
             result = tableName.substring(0, tableName.length() - 2)
                     + (String.valueOf(tableCount).length() == 1 ? "0" + tableCount : "" + tableCount);
@@ -155,13 +210,17 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         welfareLottery.setRed5(number2String(redBall.get(4)));
         welfareLottery.setRed6(number2String(redBall.get(5)));
         welfareLottery.setBlue(number2String(blueBall.get(0)));
+        welfareLottery.setLotteryInfo(getCreateLotteryInfo(redBall, blueBall));
+        return welfareLottery;
+    }
+
+    private String getCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
         StringBuilder lotteryInfo = new StringBuilder();
         for (Integer num : redBall) {
             lotteryInfo.append(number2String(num)).append("-");
         }
         lotteryInfo.append("--").append(number2String(blueBall.get(0)));
-        welfareLottery.setLotteryInfo(lotteryInfo.toString());
-        return welfareLottery;
+        return lotteryInfo.toString();
     }
 
     private String number2String(Integer number) {

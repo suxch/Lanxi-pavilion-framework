@@ -42,4 +42,9 @@ public class LotteryTest {
         welfareLotteryService.createLotteryInfo();
     }
 
+    @Test
+    public void createSportsLotteryInfo() {
+        sportsLotteryService.createLotteryInfo();
+    }
+
 }

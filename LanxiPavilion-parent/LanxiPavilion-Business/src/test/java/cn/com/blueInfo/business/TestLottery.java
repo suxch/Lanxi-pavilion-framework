@@ -1,5 +1,6 @@
 package cn.com.blueInfo.business;
 
+import cn.com.blueInfo.business.lottery.util.LotteryUtils;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 
@@ -10,6 +11,41 @@ import java.util.Random;
 
 @Log4j2
 public class TestLottery {
+
+    @Test
+    public void testLottery1() {
+        long startTime = System.currentTimeMillis();
+        List<List<Integer>> redBallList = LotteryUtils.generateCombinations(33, 6);
+        Collections.shuffle(redBallList);
+        List<List<Integer>> blueBallList = LotteryUtils.generateCombinations(16, 1);
+        Collections.shuffle(blueBallList);
+
+        List<String> result = new ArrayList<>();
+
+        for (List<Integer> redBall : redBallList) {
+            for (List<Integer> blueBall : blueBallList) {
+                result.add(batchSaveCreateLotteryInfo(redBall, blueBall));
+            }
+        }
+        long endTime = System.currentTimeMillis();
+
+        Collections.shuffle(result);
+        System.out.println(result.size());
+        System.out.println(endTime - startTime);
+    }
+
+    private String batchSaveCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
+        StringBuilder lotteryInfo = new StringBuilder();
+        for (Integer num : redBall) {
+            lotteryInfo.append(number2String(num)).append("-");
+        }
+        lotteryInfo.append("--").append(number2String(blueBall.get(0)));
+        return lotteryInfo.toString();
+    }
+
+    private String number2String(Integer number) {
+        return String.valueOf(number).length() == 1 ? "0" + number : number + "";
+    }
 
     @Test
     public void testInteger() {

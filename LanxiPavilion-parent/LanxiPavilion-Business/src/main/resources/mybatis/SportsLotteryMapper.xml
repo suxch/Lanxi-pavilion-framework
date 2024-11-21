@@ -6,4 +6,42 @@
         delete from sports_lottery;
     </delete>
 
+    <insert id="customBatchInsert">
+        INSERT INTO ${tableName} (uuid, red1, red2, red3, red4, red5, blue1, blue2, lottery_info)
+        VALUES
+            <foreach collection="list" item="spo" separator=",">
+                (#{spo.uuid}, #{spo.red1}, #{spo.red2}, #{spo.red3}, #{spo.red4}, #{spo.red5}, #{spo.blue1}, #{spo.blue2}, #{spo.lotteryInfo})
+            </foreach>
+    </insert>
+
+    <update id="createSportsSubTable">
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+            `uuid` varchar(64),
+            `issue` varchar(16),
+            `date` varchar(32),
+            `red1` varchar(2),
+            `red2` varchar(2),
+            `red3` varchar(2),
+            `red4` varchar(2),
+            `red5` varchar(2),
+            `blue1` varchar(2),
+            `blue2` varchar(2),
+            `lottery_info` varchar(255),
+            `first_base_num` varchar(4),
+            `first_base_money` varchar(255),
+            `first_append_num` varchar(4),
+            `first_append_money` varchar(255),
+            `second_base_num` varchar(5),
+            `second_base_money` varchar(255),
+            `second_append_num` varchar(4),
+            `second_append_money` varchar(255),
+            `countId` int(10) NOT NULL AUTO_INCREMENT,
+            PRIMARY KEY (`countId`) USING BTREE
+        )
+    </update>
+
+    <update id="updateAutoIncrement">
+        ALTER TABLE ${tableName} AUTO_INCREMENT = ${count}
+    </update>
+
 </mapper>
