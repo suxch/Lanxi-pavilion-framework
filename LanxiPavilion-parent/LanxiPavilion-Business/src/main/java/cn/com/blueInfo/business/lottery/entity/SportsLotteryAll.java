@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class SportsLottery_All {
+public class SportsLotteryAll {
 
     private String uuid;
     private String issue;

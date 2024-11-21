@@ -92,8 +92,8 @@ public class DataBaseParamTest {
             welfareLottery.setUuid(UUID.randomUUID().toString());
             int addCount = welfareLotteryMapper.insert(welfareLottery);
         }
-        List<WelfareLottery_All> welfareLotteryAllList = JSONArray.parseArray(data.toJSONString(), WelfareLottery_All.class);
-        for (WelfareLottery_All welfareLotteryAll : welfareLotteryAllList) {
+        List<WelfareLotteryAll> welfareLotteryAllList = JSONArray.parseArray(data.toJSONString(), WelfareLotteryAll.class);
+        for (WelfareLotteryAll welfareLotteryAll : welfareLotteryAllList) {
             welfareLotteryAll.setUuid(UUID.randomUUID().toString());
         }
     }
@@ -105,8 +105,8 @@ public class DataBaseParamTest {
             sportsLottery.setUuid(UUID.randomUUID().toString());
             int addCount = sportsLotteryMapper.insert(sportsLottery);
         }
-        List<SportsLottery_All> sportsLotteryAllList = JSONArray.parseArray(data.toJSONString(), SportsLottery_All.class);
-        for (SportsLottery_All sportsLotteryAll : sportsLotteryAllList) {
+        List<SportsLotteryAll> sportsLotteryAllList = JSONArray.parseArray(data.toJSONString(), SportsLotteryAll.class);
+        for (SportsLotteryAll sportsLotteryAll : sportsLotteryAllList) {
             sportsLotteryAll.setUuid(UUID.randomUUID().toString());
         }
     }

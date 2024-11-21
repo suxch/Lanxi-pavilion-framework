@@ -1,9 +1,9 @@
 package cn.com.blueInfo.business.lottery;
 
 import cn.com.blueInfo.business.lottery.entity.SportsLottery;
-import cn.com.blueInfo.business.lottery.entity.SportsLottery_All;
+import cn.com.blueInfo.business.lottery.entity.SportsLotteryAll;
 import cn.com.blueInfo.business.lottery.entity.WelfareLottery;
-import cn.com.blueInfo.business.lottery.entity.WelfareLottery_All;
+import cn.com.blueInfo.business.lottery.entity.WelfareLotteryAll;
 import cn.com.blueInfo.business.lottery.enums.SportsLotteryEnum;
 import cn.com.blueInfo.business.lottery.enums.WelfareLotteryEnum;
 import com.alibaba.fastjson.JSONArray;
@@ -163,7 +163,7 @@ public class ParseLotteryFiles {
 
         //System.out.println(data.toJSONString());
         List<SportsLottery> sportsLotteryList = JSONArray.parseArray(data.toJSONString(), SportsLottery.class);
-        List<SportsLottery_All> sportsLotteryAllList = JSONArray.parseArray(data.toJSONString(), SportsLottery_All.class);
+        List<SportsLotteryAll> sportsLotteryAllList = JSONArray.parseArray(data.toJSONString(), SportsLotteryAll.class);
         return data;
     }
 
@@ -269,7 +269,7 @@ public class ParseLotteryFiles {
 
         //System.out.println(data.toJSONString());
         List<WelfareLottery> welfareLotteryList = JSONArray.parseArray(data.toJSONString(), WelfareLottery.class);
-        List<WelfareLottery_All> welfareLotteryAllList = JSONArray.parseArray(data.toJSONString(), WelfareLottery_All.class);
+        List<WelfareLotteryAll> welfareLotteryAllList = JSONArray.parseArray(data.toJSONString(), WelfareLotteryAll.class);
         return data;
     }
 
