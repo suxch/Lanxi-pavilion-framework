@@ -1,6 +1,7 @@
 package cn.com.blueInfo.business.lottery.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LotteryUtils {
@@ -29,6 +30,82 @@ public class LotteryUtils {
             generateCombinationsInternal(total, number, i + 1, combination, result);
             combination.remove(combination.size() - 1);
         }
+    }
+
+    /**
+     * 获取表名
+     * @param tableName 表名
+     * @param nameLength 表名长度
+     * @return String
+     */
+    public static String getTableNameCount(String tableName, int nameLength) {
+        String result = "";
+        String[] names = tableName.split("_");
+        if (names.length == nameLength) {
+            result = tableName + "_01";
+        } else {
+            int tableCount = Integer.parseInt(names[nameLength]);
+            tableCount++;
+            result = tableName.substring(0, tableName.length() - 2)
+                    + (String.valueOf(tableCount).length() == 1 ? "0" + tableCount : "" + tableCount);
+        }
+        return result;
+    }
+
+    /**
+     * 获取创建彩票信息
+     * @param redBall 红球
+     * @param blueBall 蓝球
+     * @return String
+     */
+    public static String getCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
+        StringBuilder lotteryInfo = new StringBuilder();
+        for (Integer num : redBall) {
+            lotteryInfo.append(number2String(num)).append("-");
+        }
+        lotteryInfo.append("--");
+        for (Integer num : blueBall) {
+            lotteryInfo.append(number2String(num)).append("-");
+        }
+        lotteryInfo.setLength(lotteryInfo.length() - 1);
+        return lotteryInfo.toString();
+    }
+
+    /**
+     * 数字补零转字符串
+     * @param number 数字
+     * @return String
+     */
+    public static String number2String(Integer number) {
+        return String.valueOf(number).length() == 1 ? "0" + number : number + "";
+    }
+
+    /**
+     * 数字补零转字符串
+     * @param number 数字
+     * @return String
+     */
+    public static String number2String(String number) {
+        return number.length() == 1 ? "0" + number : number;
+    }
+
+    /**
+     * 随机生成彩票信息
+     * @param redBallList 红球合集
+     * @param blueBallList 篮球合集
+     * @return List<String>
+     */
+    public static List<String> randomLotteryInfo(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
+        List<String> lotteryInfoList = new ArrayList<>();
+        for (List<Integer> redBall : redBallList) {
+            for (List<Integer> blueBall : blueBallList) {
+                lotteryInfoList.add(getCreateLotteryInfo(redBall, blueBall));
+            }
+        }
+
+        Collections.shuffle(lotteryInfoList);
+
+        return lotteryInfoList;
     }
 
 }

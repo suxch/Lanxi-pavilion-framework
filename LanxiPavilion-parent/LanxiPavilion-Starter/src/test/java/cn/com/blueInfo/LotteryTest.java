@@ -33,11 +33,6 @@ public class LotteryTest {
     }
 
     @Test
-    public void testA() {
-        welfareLotteryService.createWelfareLotteryData();
-    }
-
-    @Test
     public void createWelfareLotteryInfo() {
         welfareLotteryService.createLotteryInfo();
     }

@@ -22,20 +22,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static cn.com.blueInfo.business.lottery.util.LotteryUtils.*;
+
 @Log4j2
 @Service
 public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper, WelfareLottery>
         implements WelfareLotteryService {
 
     @Autowired
-    private WelfareLotteryMapper welfareLotteryMapper;
-
-    @Autowired
     private WelfareLotteryParam welfareLotteryParam;
 
     @Override
     public void addWelfareLotteryDataForHttp() {
-        welfareLotteryMapper.delete(null);
+        baseMapper.delete(null);
         String result = HttpClient.doGet(welfareLotteryParam.getUrl(1, 30), welfareLotteryParam.getHeader());
         JSONObject resultData = JSON.parseObject(result);
         log.info(resultData);
@@ -60,11 +59,6 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
     }
 
     @Override
-    public void createWelfareLotteryData() {
-
-    }
-
-    @Override
     public void updateLatestData() {
         LambdaQueryWrapper<WelfareLottery> wrapper = new LambdaQueryWrapper<WelfareLottery>()
                 .select(WelfareLottery::getUuid, WelfareLottery::getIssue, WelfareLottery::getDate)
@@ -75,31 +69,62 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         pageParam.setCurrent(1);
         pageParam.setSize(10);
 
-        IPage<WelfareLottery> welfareLotteryIPage = welfareLotteryMapper.selectPage(pageParam, wrapper);
+        IPage<WelfareLottery> welfareLotteryIPage = baseMapper.selectPage(pageParam, wrapper);
         log.info(welfareLotteryIPage.getRecords().size());
     }
 
     @Override
     public void createLotteryInfo() {
         List<List<Integer>> redBallList = LotteryUtils.generateCombinations(33, 6);
-        Collections.shuffle(redBallList);
         List<List<Integer>> blueBallList = LotteryUtils.generateCombinations(16, 1);
+
+        createLotteryInfo(redBallList, blueBallList, "welfare_lottery_0");
+
+        Collections.shuffle(redBallList);
         Collections.shuffle(blueBallList);
+
+        createLotteryInfo(redBallList, blueBallList, "welfare_lottery_1");
 
         createLotteryInfo1(redBallList, blueBallList);
 
     }
 
-    private void createLotteryInfo1(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
-        String tableName = "welfare_lottery_1";
-        List<String> lotteryInfoList = new ArrayList<>();
-        for (List<Integer> redBall : redBallList) {
+    private void createLotteryInfo(List<List<Integer>> redBallList, List<List<Integer>> blueBallList,
+                                   String tableName) {
+        List<WelfareLottery> welfareLotteryList = new ArrayList<>();
+        for (int r_i = 0, r_len = redBallList.size(); r_i < r_len; r_i++) {
+            List<Integer> redBall = redBallList.get(r_i);
             for (List<Integer> blueBall : blueBallList) {
-                lotteryInfoList.add(getCreateLotteryInfo(redBall, blueBall));
+                welfareLotteryList.add(batchSaveCreateLotteryInfo(redBall, blueBall));
+            }
+            // 第一次存储的时候需要创建表
+            if (r_i % 50000 == 0) {
+                tableName = getTableNameCount(tableName, 3);
+                baseMapper.createWelfareSubTable(tableName);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (r_i != 0) {
+                    baseMapper.updateAutoIncrement(tableName, "" + ((r_i * 16) + 1));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            int insertCount = baseMapper.customBatchInsert(tableName, welfareLotteryList);
+            if (insertCount != 0) {
+                welfareLotteryList.clear();
             }
         }
+    }
 
-        Collections.shuffle(lotteryInfoList);
+    private void createLotteryInfo1(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
+        String tableName = "welfare_lottery_2";
+        List<String> lotteryInfoList = randomLotteryInfo(redBallList, blueBallList);
 
         List<WelfareLottery> welfareLotteryList = new ArrayList<>();
         for (int l_i = 0, l_len = lotteryInfoList.size(); l_i < l_len; l_i++) {
@@ -109,7 +134,7 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
 
             // 第一次存储的时候需要创建表
             if (l_i % 800000 == 0) {
-                tableName = getTableNameCount(tableName);
+                tableName = getTableNameCount(tableName, 3);
                 baseMapper.createWelfareSubTable(tableName);
                 try {
                     Thread.sleep(1000);
@@ -142,62 +167,15 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         String redBall = lotteryInfoArray[0];
         String blueBall = lotteryInfoArray[1];
         String[] redBallArray = redBall.split("-");
-        welfareLottery.setRed1(number2String(Integer.valueOf(redBallArray[0])));
-        welfareLottery.setRed2(number2String(Integer.valueOf(redBallArray[1])));
-        welfareLottery.setRed3(number2String(Integer.valueOf(redBallArray[2])));
-        welfareLottery.setRed4(number2String(Integer.valueOf(redBallArray[3])));
-        welfareLottery.setRed5(number2String(Integer.valueOf(redBallArray[4])));
-        welfareLottery.setRed6(number2String(Integer.valueOf(redBallArray[5])));
-        welfareLottery.setBlue(number2String(Integer.valueOf(blueBall)));
+        welfareLottery.setRed1(number2String(redBallArray[0]));
+        welfareLottery.setRed2(number2String(redBallArray[1]));
+        welfareLottery.setRed3(number2String(redBallArray[2]));
+        welfareLottery.setRed4(number2String(redBallArray[3]));
+        welfareLottery.setRed5(number2String(redBallArray[4]));
+        welfareLottery.setRed6(number2String(redBallArray[5]));
+        welfareLottery.setBlue(number2String(blueBall));
         welfareLottery.setLotteryInfo(lotteryInfo);
         return welfareLottery;
-    }
-
-    private void createLotteryInfo(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
-        String tableName = "welfare_lottery_0";
-        List<WelfareLottery> welfareLotteryList = new ArrayList<>();
-        for (int r_i = 0, r_len = redBallList.size(); r_i < r_len; r_i++) {
-            List<Integer> redBall = redBallList.get(r_i);
-            for (List<Integer> blueBall : blueBallList) {
-                welfareLotteryList.add(batchSaveCreateLotteryInfo(redBall, blueBall));
-            }
-            // 第一次存储的时候需要创建表
-            if (r_i % 50000 == 0) {
-                tableName = getTableNameCount(tableName);
-                baseMapper.createWelfareSubTable(tableName);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                if (r_i != 0) {
-                    baseMapper.updateAutoIncrement(tableName, "" + ((r_i * 16) + 1));
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-            int insertCount = baseMapper.customBatchInsert(tableName, welfareLotteryList);
-            if (insertCount != 0) {
-                welfareLotteryList.clear();
-            }
-        }
-    }
-
-    private String getTableNameCount(String tableName) {
-        String result = "";
-        String[] names = tableName.split("_");
-        if (names.length == 3) {
-            result = tableName + "_01";
-        } else {
-            int tableCount = Integer.parseInt(names[3]);
-            tableCount++;
-            result = tableName.substring(0, tableName.length() - 2)
-                    + (String.valueOf(tableCount).length() == 1 ? "0" + tableCount : "" + tableCount);
-        }
-        return result;
     }
 
     private WelfareLottery batchSaveCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
@@ -212,19 +190,6 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         welfareLottery.setBlue(number2String(blueBall.get(0)));
         welfareLottery.setLotteryInfo(getCreateLotteryInfo(redBall, blueBall));
         return welfareLottery;
-    }
-
-    private String getCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
-        StringBuilder lotteryInfo = new StringBuilder();
-        for (Integer num : redBall) {
-            lotteryInfo.append(number2String(num)).append("-");
-        }
-        lotteryInfo.append("--").append(number2String(blueBall.get(0)));
-        return lotteryInfo.toString();
-    }
-
-    private String number2String(Integer number) {
-        return String.valueOf(number).length() == 1 ? "0" + number : number + "";
     }
 
     private void addDataToDatabase(JSONObject resultData) {
@@ -270,7 +235,7 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
                 }
             }
             log.info(welfareLottery.toString());
-            welfareLotteryMapper.insert(welfareLottery);
+            baseMapper.insert(welfareLottery);
         }
     }
 }

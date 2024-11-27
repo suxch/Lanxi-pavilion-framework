@@ -7,8 +7,6 @@ public interface WelfareLotteryService extends IService<WelfareLottery> {
 
     void addWelfareLotteryDataForHttp();
 
-    void createWelfareLotteryData();
-
     void updateLatestData();
 
     void createLotteryInfo();
