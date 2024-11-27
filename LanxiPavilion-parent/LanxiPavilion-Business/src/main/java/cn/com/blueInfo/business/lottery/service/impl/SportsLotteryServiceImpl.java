@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static cn.com.blueInfo.business.lottery.util.LotteryUtils.*;
-
 @Log4j2
 @Service
 public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, SportsLottery>
@@ -83,7 +81,7 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
             }
             // 第一次存储的时候需要创建表
             if (r_i % 15000 == 0) {
-                tableName = getTableNameCount(tableName, 3);
+                tableName = LotteryUtils.getTableNameCount(tableName, 3);
                 baseMapper.createSportsSubTable(tableName);
                 try {
                     Thread.sleep(1000);
@@ -108,7 +106,7 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
 
     private void createLotteryInfo2(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
         String tableName = "sports_lottery_2";
-        List<String> lotteryInfoList = randomLotteryInfo(redBallList, blueBallList);
+        List<String> lotteryInfoList = LotteryUtils.randomLotteryInfo(redBallList, blueBallList);
 
         List<SportsLottery> sportsLotteryList = new ArrayList<>();
         for (int l_i = 0, l_len = lotteryInfoList.size(); l_i < l_len; l_i++) {
@@ -118,7 +116,7 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
 
             // 第一次存储的时候需要创建表
             if (l_i % 990000 == 0) {
-                tableName = getTableNameCount(tableName, 3);
+                tableName = LotteryUtils.getTableNameCount(tableName, 3);
                 baseMapper.createSportsSubTable(tableName);
                 try {
                     Thread.sleep(1000);
@@ -147,14 +145,14 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
     private SportsLottery batchSaveCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
         SportsLottery sportsLottery = new SportsLottery();
         sportsLottery.setUuid(UUID.randomUUID().toString());
-        sportsLottery.setRed1(number2String(redBall.get(0)));
-        sportsLottery.setRed2(number2String(redBall.get(1)));
-        sportsLottery.setRed3(number2String(redBall.get(2)));
-        sportsLottery.setRed4(number2String(redBall.get(3)));
-        sportsLottery.setRed5(number2String(redBall.get(4)));
-        sportsLottery.setBlue1(number2String(blueBall.get(0)));
-        sportsLottery.setBlue2(number2String(blueBall.get(1)));
-        sportsLottery.setLotteryInfo(getCreateLotteryInfo(redBall, blueBall));
+        sportsLottery.setRed1(LotteryUtils.number2String(redBall.get(0)));
+        sportsLottery.setRed2(LotteryUtils.number2String(redBall.get(1)));
+        sportsLottery.setRed3(LotteryUtils.number2String(redBall.get(2)));
+        sportsLottery.setRed4(LotteryUtils.number2String(redBall.get(3)));
+        sportsLottery.setRed5(LotteryUtils.number2String(redBall.get(4)));
+        sportsLottery.setBlue1(LotteryUtils.number2String(blueBall.get(0)));
+        sportsLottery.setBlue2(LotteryUtils.number2String(blueBall.get(1)));
+        sportsLottery.setLotteryInfo(LotteryUtils.getCreateLotteryInfo(redBall, blueBall));
         return sportsLottery;
     }
 
@@ -166,13 +164,13 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
         String blueBall = lotteryInfoArray[1];
         String[] redBallArray = redBall.split("-");
         String[] blueBallArray = blueBall.split("-");
-        sportsLottery.setRed1(number2String(redBallArray[0]));
-        sportsLottery.setRed2(number2String(redBallArray[1]));
-        sportsLottery.setRed3(number2String(redBallArray[2]));
-        sportsLottery.setRed4(number2String(redBallArray[3]));
-        sportsLottery.setRed5(number2String(redBallArray[4]));
-        sportsLottery.setBlue1(number2String(blueBallArray[0]));
-        sportsLottery.setBlue2(number2String(blueBallArray[1]));
+        sportsLottery.setRed1(LotteryUtils.number2String(redBallArray[0]));
+        sportsLottery.setRed2(LotteryUtils.number2String(redBallArray[1]));
+        sportsLottery.setRed3(LotteryUtils.number2String(redBallArray[2]));
+        sportsLottery.setRed4(LotteryUtils.number2String(redBallArray[3]));
+        sportsLottery.setRed5(LotteryUtils.number2String(redBallArray[4]));
+        sportsLottery.setBlue1(LotteryUtils.number2String(blueBallArray[0]));
+        sportsLottery.setBlue2(LotteryUtils.number2String(blueBallArray[1]));
         sportsLottery.setLotteryInfo(lotteryInfo);
         return sportsLottery;
     }

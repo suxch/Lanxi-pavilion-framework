@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static cn.com.blueInfo.business.lottery.util.LotteryUtils.*;
-
 @Log4j2
 @Service
 public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper, WelfareLottery>
@@ -99,7 +97,7 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
             }
             // 第一次存储的时候需要创建表
             if (r_i % 50000 == 0) {
-                tableName = getTableNameCount(tableName, 3);
+                tableName = LotteryUtils.getTableNameCount(tableName, 3);
                 baseMapper.createWelfareSubTable(tableName);
                 try {
                     Thread.sleep(1000);
@@ -124,7 +122,7 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
 
     private void createLotteryInfo1(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
         String tableName = "welfare_lottery_2";
-        List<String> lotteryInfoList = randomLotteryInfo(redBallList, blueBallList);
+        List<String> lotteryInfoList = LotteryUtils.randomLotteryInfo(redBallList, blueBallList);
 
         List<WelfareLottery> welfareLotteryList = new ArrayList<>();
         for (int l_i = 0, l_len = lotteryInfoList.size(); l_i < l_len; l_i++) {
@@ -134,7 +132,7 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
 
             // 第一次存储的时候需要创建表
             if (l_i % 800000 == 0) {
-                tableName = getTableNameCount(tableName, 3);
+                tableName = LotteryUtils.getTableNameCount(tableName, 3);
                 baseMapper.createWelfareSubTable(tableName);
                 try {
                     Thread.sleep(1000);
@@ -167,13 +165,13 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         String redBall = lotteryInfoArray[0];
         String blueBall = lotteryInfoArray[1];
         String[] redBallArray = redBall.split("-");
-        welfareLottery.setRed1(number2String(redBallArray[0]));
-        welfareLottery.setRed2(number2String(redBallArray[1]));
-        welfareLottery.setRed3(number2String(redBallArray[2]));
-        welfareLottery.setRed4(number2String(redBallArray[3]));
-        welfareLottery.setRed5(number2String(redBallArray[4]));
-        welfareLottery.setRed6(number2String(redBallArray[5]));
-        welfareLottery.setBlue(number2String(blueBall));
+        welfareLottery.setRed1(LotteryUtils.number2String(redBallArray[0]));
+        welfareLottery.setRed2(LotteryUtils.number2String(redBallArray[1]));
+        welfareLottery.setRed3(LotteryUtils.number2String(redBallArray[2]));
+        welfareLottery.setRed4(LotteryUtils.number2String(redBallArray[3]));
+        welfareLottery.setRed5(LotteryUtils.number2String(redBallArray[4]));
+        welfareLottery.setRed6(LotteryUtils.number2String(redBallArray[5]));
+        welfareLottery.setBlue(LotteryUtils.number2String(blueBall));
         welfareLottery.setLotteryInfo(lotteryInfo);
         return welfareLottery;
     }
@@ -181,14 +179,14 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
     private WelfareLottery batchSaveCreateLotteryInfo(List<Integer> redBall, List<Integer> blueBall) {
         WelfareLottery welfareLottery = new WelfareLottery();
         welfareLottery.setUuid(UUID.randomUUID().toString());
-        welfareLottery.setRed1(number2String(redBall.get(0)));
-        welfareLottery.setRed2(number2String(redBall.get(1)));
-        welfareLottery.setRed3(number2String(redBall.get(2)));
-        welfareLottery.setRed4(number2String(redBall.get(3)));
-        welfareLottery.setRed5(number2String(redBall.get(4)));
-        welfareLottery.setRed6(number2String(redBall.get(5)));
-        welfareLottery.setBlue(number2String(blueBall.get(0)));
-        welfareLottery.setLotteryInfo(getCreateLotteryInfo(redBall, blueBall));
+        welfareLottery.setRed1(LotteryUtils.number2String(redBall.get(0)));
+        welfareLottery.setRed2(LotteryUtils.number2String(redBall.get(1)));
+        welfareLottery.setRed3(LotteryUtils.number2String(redBall.get(2)));
+        welfareLottery.setRed4(LotteryUtils.number2String(redBall.get(3)));
+        welfareLottery.setRed5(LotteryUtils.number2String(redBall.get(4)));
+        welfareLottery.setRed6(LotteryUtils.number2String(redBall.get(5)));
+        welfareLottery.setBlue(LotteryUtils.number2String(blueBall.get(0)));
+        welfareLottery.setLotteryInfo(LotteryUtils.getCreateLotteryInfo(redBall, blueBall));
         return welfareLottery;
     }
 
