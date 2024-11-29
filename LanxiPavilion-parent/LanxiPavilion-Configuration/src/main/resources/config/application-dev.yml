@@ -55,7 +55,7 @@ mybatis-plus:
   # 日志输出实现类
   configuration:
     # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    # 枚举转换方式
+    # 枚举转换方式 (注意增加注解@EnumValue)
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
 
 logging:

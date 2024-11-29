@@ -29,7 +29,7 @@ public class LotteryTest {
 
     @Test
     public void testQuery() {
-        welfareLotteryService.updateLatestData();
+        welfareLotteryService.updateLatestLotteryDataForHttp();
     }
 
     @Test

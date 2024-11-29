@@ -10,7 +10,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.log4j.Log4j2;
@@ -57,17 +56,14 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
     }
 
     @Override
-    public void updateLatestData() {
+    public void updateLatestLotteryDataForHttp() {
         LambdaQueryWrapper<WelfareLottery> wrapper = new LambdaQueryWrapper<WelfareLottery>()
                 .select(WelfareLottery::getUuid, WelfareLottery::getIssue, WelfareLottery::getDate)
                 .orderByDesc(WelfareLottery::getDate);
-//        List<WelfareLottery> welfareLotteryList = welfareLotteryMapper.selectList(wrapper);
 
-        IPage<WelfareLottery> pageParam = new Page<WelfareLottery>();
-        pageParam.setCurrent(1);
-        pageParam.setSize(10);
+        Page<WelfareLottery> welfareLotteryPage = Page.of(1, 10);
 
-        IPage<WelfareLottery> welfareLotteryIPage = baseMapper.selectPage(pageParam, wrapper);
+        Page<WelfareLottery> welfareLotteryIPage = page(welfareLotteryPage, wrapper);
         log.info(welfareLotteryIPage.getRecords().size());
     }
 
