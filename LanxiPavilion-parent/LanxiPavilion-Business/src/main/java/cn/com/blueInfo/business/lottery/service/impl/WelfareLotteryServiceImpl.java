@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +32,21 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
 
     @Override
     public void addWelfareLotteryDataForHttp() {
-        baseMapper.delete(null);
+        addWelfareLotteryDataForHttp(null);
+    }
+
+
+    public void addWelfareLotteryDataForHttp(String lastIssue) {
+        if (lastIssue == null) {
+            baseMapper.delete(null);
+        }
         String result = HttpClient.doGet(welfareLotteryParam.getUrl(1, 30), welfareLotteryParam.getHeader());
         JSONObject resultData = JSON.parseObject(result);
         log.info(resultData);
-        addDataToDatabase(resultData);
+        addDataToDatabase(resultData, lastIssue);
+        if (lastIssue != null) {
+            return;
+        }
         Integer pageNum = resultData.getInteger("pageNum");
         try {
             Thread.sleep(1000);
@@ -46,7 +57,7 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
             String onePageResult = HttpClient.doGet(welfareLotteryParam.getUrl(p_i, 30), welfareLotteryParam.getHeader());
             JSONObject onePageResultData = JSON.parseObject(onePageResult);
             log.info(onePageResultData);
-            addDataToDatabase(onePageResultData);
+            addDataToDatabase(onePageResultData, null);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -61,10 +72,23 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
                 .select(WelfareLottery::getUuid, WelfareLottery::getIssue, WelfareLottery::getDate)
                 .orderByDesc(WelfareLottery::getDate);
 
-        Page<WelfareLottery> welfareLotteryPage = Page.of(1, 10);
+        Page<WelfareLottery> welfareLotteryPage = Page.of(1, 1);
 
         Page<WelfareLottery> welfareLotteryIPage = page(welfareLotteryPage, wrapper);
-        log.info(welfareLotteryIPage.getRecords().size());
+
+        log.info(welfareLotteryIPage.getRecords().get(0).getIssue());
+
+        Long counted = lambdaQuery().count();
+
+        log.info(counted);
+
+        String lastIssue = welfareLotteryIPage.getRecords().get(0).getIssue();
+        addWelfareLotteryDataForHttp(lastIssue);
+
+        Long counted1 = lambdaQuery().count();
+
+        log.info("共增加了" + (counted1 - counted) + "条数据");
+
     }
 
     @Override
@@ -186,14 +210,20 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         return welfareLottery;
     }
 
-    private void addDataToDatabase(JSONObject resultData) {
+    private void addDataToDatabase(JSONObject resultData, String lastIssue) {
         JSONArray data = resultData.getJSONArray("result");
         for (int d_i = 0, d_len = data.size(); d_i < d_len; d_i++) {
             JSONObject oneData = data.getJSONObject(d_i);
+
+            String issue = oneData.getString("code");
+            if (StringUtils.isNotEmpty(lastIssue) && lastIssue.equals(issue)) {
+                break;
+            }
+
             WelfareLottery welfareLottery = new WelfareLottery();
 
             welfareLottery.setUuid(UUID.randomUUID().toString());
-            welfareLottery.setIssue(oneData.getString("code"));
+            welfareLottery.setIssue(issue);
             welfareLottery.setDate(oneData.getString("date"));
 
             String red = oneData.getString("red");
