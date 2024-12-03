@@ -7,6 +7,8 @@ public interface SportsLotteryService extends IService<SportsLottery> {
 
     void addSportsLotteryDataForHttp();
 
+    void updateLatestLotteryDataForHttp();
+
     void createLotteryInfo();
 
 }

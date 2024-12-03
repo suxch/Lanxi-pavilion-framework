@@ -9,8 +9,11 @@ import cn.com.blueInfo.utils.client.HttpClient;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +32,16 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
 
     @Override
     public void addSportsLotteryDataForHttp() {
+        addSportsLotteryDataForHttp(null);
+    }
+
+    public void addSportsLotteryDataForHttp(String lastIssue) {
         baseMapper.delete(null);
         String result = HttpClient.doGet(sportsLotteryParam.getUrl(1, 30), sportsLotteryParam.getHeader());
         JSONObject resultData = JSON.parseObject(result);
         JSONObject resultValue = resultData.getJSONObject("value");
         log.info(resultData);
-        addDataToDatabase(resultValue);
+        addDataToDatabase(resultValue, lastIssue);
         Integer pages = resultValue.getInteger("pages");
         try {
             Thread.sleep(1000);
@@ -46,13 +53,38 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
             JSONObject onePageResultData = JSON.parseObject(onePageResult);
             JSONObject onePageResultValue = onePageResultData.getJSONObject("value");
             log.info(onePageResultData);
-            addDataToDatabase(onePageResultValue);
+            addDataToDatabase(onePageResultValue, lastIssue);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Override
+    public void updateLatestLotteryDataForHttp() {
+        LambdaQueryWrapper<SportsLottery> wrapper = new LambdaQueryWrapper<SportsLottery>()
+                .select(SportsLottery::getUuid, SportsLottery::getIssue, SportsLottery::getDate)
+                .orderByDesc(SportsLottery::getDate);
+
+        Page<SportsLottery> sportsLotteryPage = Page.of(1, 1);
+
+        Page<SportsLottery> sportsLotteryIPage = page(sportsLotteryPage, wrapper);
+
+        log.info(sportsLotteryIPage.getRecords().get(0).getIssue());
+
+        Long counted = lambdaQuery().count();
+
+        log.info(counted);
+
+        String lastIssue = sportsLotteryIPage.getRecords().get(0).getIssue();
+        addSportsLotteryDataForHttp(lastIssue);
+
+        Long counted1 = lambdaQuery().count();
+
+        log.info("共增加了" + (counted1 - counted) + "条数据");
+
     }
 
     @Override
@@ -175,14 +207,20 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
         return sportsLottery;
     }
 
-    private void addDataToDatabase(JSONObject resultData) {
+    private void addDataToDatabase(JSONObject resultData, String lastIssue) {
         JSONArray data = resultData.getJSONArray("list");
         for (int d_i = 0, d_len = data.size(); d_i < d_len; d_i++) {
             JSONObject oneData = data.getJSONObject(d_i);
+
+            String issue = oneData.getString("lotteryDrawNum");
+            if (StringUtils.isNotEmpty(lastIssue) && lastIssue.equals(issue)) {
+                break;
+            }
+
             SportsLottery sportsLottery = new SportsLottery();
 
             sportsLottery.setUuid(UUID.randomUUID().toString());
-            sportsLottery.setIssue(oneData.getString("lotteryDrawNum"));
+            sportsLottery.setIssue(issue);
             sportsLottery.setDate(oneData.getString("lotteryDrawTime"));
 
             String lotteryDrawResult = oneData.getString("lotteryDrawResult");
