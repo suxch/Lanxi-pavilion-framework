@@ -36,12 +36,18 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
     }
 
     public void addSportsLotteryDataForHttp(String lastIssue) {
-        baseMapper.delete(null);
+        if (lastIssue == null) {
+            baseMapper.createSportsSubTable("sports_lottery");
+            baseMapper.delete(null);
+        }
         String result = HttpClient.doGet(sportsLotteryParam.getUrl(1, 30), sportsLotteryParam.getHeader());
         JSONObject resultData = JSON.parseObject(result);
         JSONObject resultValue = resultData.getJSONObject("value");
         log.info(resultData);
         addDataToDatabase(resultValue, lastIssue);
+        if (lastIssue != null) {
+            return;
+        }
         Integer pages = resultValue.getInteger("pages");
         try {
             Thread.sleep(1000);
@@ -92,14 +98,14 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
         List<List<Integer>> redBallList = LotteryUtils.generateCombinations(35, 5);
         List<List<Integer>> blueBallList = LotteryUtils.generateCombinations(12, 2);
 
-        createLotteryInfo(redBallList, blueBallList, "sports_lottery_0");
+//        createLotteryInfo(redBallList, blueBallList, "sports_lottery_0");
 
         Collections.shuffle(redBallList);
         Collections.shuffle(blueBallList);
 
-        createLotteryInfo(redBallList, blueBallList, "sports_lottery_1");
+//        createLotteryInfo(redBallList, blueBallList, "sports_lottery_1");
 
-        createLotteryInfo2(redBallList, blueBallList);
+        createLotteryInfo2(redBallList, blueBallList, "sports_lottery_2");
 
     }
 
@@ -136,8 +142,7 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
         }
     }
 
-    private void createLotteryInfo2(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
-        String tableName = "sports_lottery_2";
+    private void createLotteryInfo2(List<List<Integer>> redBallList, List<List<Integer>> blueBallList, String tableName) {
         List<String> lotteryInfoList = LotteryUtils.randomLotteryInfo(redBallList, blueBallList);
 
         List<SportsLottery> sportsLotteryList = new ArrayList<>();

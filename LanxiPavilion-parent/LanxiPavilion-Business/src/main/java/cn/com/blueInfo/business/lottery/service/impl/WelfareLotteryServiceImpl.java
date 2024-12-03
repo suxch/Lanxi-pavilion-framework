@@ -38,6 +38,7 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
 
     public void addWelfareLotteryDataForHttp(String lastIssue) {
         if (lastIssue == null) {
+            baseMapper.createWelfareSubTable("welfare_lottery");
             baseMapper.delete(null);
         }
         String result = HttpClient.doGet(welfareLotteryParam.getUrl(1, 30), welfareLotteryParam.getHeader());
@@ -96,14 +97,14 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         List<List<Integer>> redBallList = LotteryUtils.generateCombinations(33, 6);
         List<List<Integer>> blueBallList = LotteryUtils.generateCombinations(16, 1);
 
-        createLotteryInfo(redBallList, blueBallList, "welfare_lottery_0");
+//        createLotteryInfo(redBallList, blueBallList, "welfare_lottery_0");
 
         Collections.shuffle(redBallList);
         Collections.shuffle(blueBallList);
 
-        createLotteryInfo(redBallList, blueBallList, "welfare_lottery_1");
+//        createLotteryInfo(redBallList, blueBallList, "welfare_lottery_1");
 
-        createLotteryInfo1(redBallList, blueBallList);
+        createLotteryInfo1(redBallList, blueBallList, "welfare_lottery_2");
 
     }
 
@@ -140,8 +141,7 @@ public class WelfareLotteryServiceImpl extends ServiceImpl<WelfareLotteryMapper,
         }
     }
 
-    private void createLotteryInfo1(List<List<Integer>> redBallList, List<List<Integer>> blueBallList) {
-        String tableName = "welfare_lottery_2";
+    private void createLotteryInfo1(List<List<Integer>> redBallList, List<List<Integer>> blueBallList, String tableName) {
         List<String> lotteryInfoList = LotteryUtils.randomLotteryInfo(redBallList, blueBallList);
 
         List<WelfareLottery> welfareLotteryList = new ArrayList<>();

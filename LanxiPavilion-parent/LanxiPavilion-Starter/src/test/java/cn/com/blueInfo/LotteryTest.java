@@ -42,4 +42,9 @@ public class LotteryTest {
         sportsLotteryService.createLotteryInfo();
     }
 
+    @Test
+    public void updateSportsLotteryInfo() {
+        sportsLotteryService.updateLatestLotteryDataForHttp();
+    }
+
 }
