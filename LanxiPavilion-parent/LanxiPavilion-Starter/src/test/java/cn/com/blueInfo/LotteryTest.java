@@ -47,4 +47,17 @@ public class LotteryTest {
         sportsLotteryService.updateLatestLotteryDataForHttp();
     }
 
+    @Test
+    public void queryWelfareLotteryInfo() {
+        welfareLotteryService.queryWelfareLotteryInfo("");
+    }
+
+    @Test
+    public void querySportsLotteryInfo() {
+        String b = "19941017";
+        sportsLotteryService.querySportsLotteryInfo(b);
+        System.out.println("--------------------------------------------");
+        welfareLotteryService.queryWelfareLotteryInfo(b);
+    }
+
 }

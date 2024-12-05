@@ -10,12 +10,12 @@ import java.util.List;
 @Mapper
 public interface SportsLotteryMapper extends BaseMapper<SportsLottery> {
 
-    int delAllData();
-
     int customBatchInsert(@Param("tableName") String tableName, @Param("list") List<SportsLottery> sportsLotteryList);
 
     int createSportsSubTable(@Param("tableName") String tableName);
 
     int updateAutoIncrement(@Param("tableName") String tableName, @Param("count") String count);
+
+    String queryLotteryInfoByIdForTable(@Param("tableName") String tableName, @Param("id") Integer countId);
 
 }

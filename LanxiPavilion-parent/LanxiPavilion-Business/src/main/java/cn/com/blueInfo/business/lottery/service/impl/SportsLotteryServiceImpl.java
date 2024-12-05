@@ -17,10 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -29,6 +26,34 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
 
     @Autowired
     private SportsLotteryParam sportsLotteryParam;
+
+    @Override
+    public List<String> querySportsLotteryInfo(String birthday) {
+        Long counted = lambdaQuery().count();
+        Random random = new Random();
+        int randomNum = 0;
+        if (StringUtils.isEmpty(birthday)) birthday = "21425712";
+        for (int i = 0, len = (int) (counted + 1); i < len; i++) {
+            int a = random.nextInt(Integer.parseInt(birthday));
+            if (i < len - 1) {
+                randomNum = a;
+            }
+        }
+        String tableNum = String.valueOf((randomNum / 990000) + 1);
+        tableNum = LotteryUtils.number2String(tableNum);
+
+        List<String> resultList = new ArrayList<String>();
+
+        for (int i = 0, len = 3; i < len; i++) {
+            String tableName = "sports_lottery_" + i + "_" + tableNum;
+            resultList.add(baseMapper.queryLotteryInfoByIdForTable(tableName, randomNum));
+        }
+
+        resultList.forEach(System.out::println);
+
+        return resultList;
+
+    }
 
     @Override
     public void addSportsLotteryDataForHttp() {
@@ -98,12 +123,12 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
         List<List<Integer>> redBallList = LotteryUtils.generateCombinations(35, 5);
         List<List<Integer>> blueBallList = LotteryUtils.generateCombinations(12, 2);
 
-//        createLotteryInfo(redBallList, blueBallList, "sports_lottery_0");
+        createLotteryInfo(redBallList, blueBallList, "sports_lottery_0");
 
         Collections.shuffle(redBallList);
         Collections.shuffle(blueBallList);
 
-//        createLotteryInfo(redBallList, blueBallList, "sports_lottery_1");
+        createLotteryInfo(redBallList, blueBallList, "sports_lottery_1");
 
         createLotteryInfo2(redBallList, blueBallList, "sports_lottery_2");
 

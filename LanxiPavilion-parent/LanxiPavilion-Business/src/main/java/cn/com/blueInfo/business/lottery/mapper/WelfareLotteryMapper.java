@@ -10,12 +10,12 @@ import java.util.List;
 @Mapper
 public interface WelfareLotteryMapper extends BaseMapper<WelfareLottery> {
 
-    void delAllData();
-
     int customBatchInsert(@Param("tableName") String tableName, @Param("list") List<WelfareLottery> welfareLotteryList);
 
     int createWelfareSubTable(@Param("tableName") String tableName);
 
     int updateAutoIncrement(@Param("tableName") String tableName, @Param("count") String count);
+
+    String queryLotteryInfoByIdForTable(@Param("tableName") String tableName, @Param("id") Integer countId);
 
 }

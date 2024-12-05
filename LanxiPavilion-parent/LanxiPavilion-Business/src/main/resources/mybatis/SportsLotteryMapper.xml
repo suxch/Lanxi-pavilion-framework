@@ -2,10 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.com.blueInfo.business.lottery.mapper.SportsLotteryMapper">
 
-    <delete id="delAllData">
-        delete from sports_lottery;
-    </delete>
-
     <insert id="customBatchInsert">
         INSERT INTO ${tableName} (uuid, red1, red2, red3, red4, red5, blue1, blue2, lottery_info)
         VALUES
@@ -43,5 +39,9 @@
     <update id="updateAutoIncrement">
         ALTER TABLE ${tableName} AUTO_INCREMENT = ${count}
     </update>
+
+    <select id="queryLotteryInfoByIdForTable" resultType="String">
+        select lottery_info from ${tableName} where countId = #{id}
+    </select>
 
 </mapper>
