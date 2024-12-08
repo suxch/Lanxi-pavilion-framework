@@ -18,4 +18,6 @@ public interface WelfareLotteryMapper extends BaseMapper<WelfareLottery> {
 
     String queryLotteryInfoByIdForTable(@Param("tableName") String tableName, @Param("id") Integer countId);
 
+    Integer queryLotteryIdByInfoForTable(@Param("tableName") String tableName, @Param("lotteryInfo") String lotteryInfo);
+
 }

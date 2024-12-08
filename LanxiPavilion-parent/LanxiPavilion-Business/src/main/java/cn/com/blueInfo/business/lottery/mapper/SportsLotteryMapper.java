@@ -18,4 +18,6 @@ public interface SportsLotteryMapper extends BaseMapper<SportsLottery> {
 
     String queryLotteryInfoByIdForTable(@Param("tableName") String tableName, @Param("id") Integer countId);
 
+    Integer queryLotteryIdByInfoForTable(@Param("tableName") String tableName, @Param("lotteryInfo") String lotteryInfo);
+
 }

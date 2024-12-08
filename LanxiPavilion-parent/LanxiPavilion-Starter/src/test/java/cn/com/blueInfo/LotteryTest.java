@@ -60,4 +60,14 @@ public class LotteryTest {
         welfareLotteryService.queryWelfareLotteryInfo(b);
     }
 
+    @Test
+    public void queryWelfareLotteryInfoByString() {
+        welfareLotteryService.queryLotteryInfoByString("04-07-08-17-22-26---15");
+    }
+
+    @Test
+    public void querySportsLotteryInfoByString() {
+        sportsLotteryService.queryLotteryInfoByString("04-07-08-17-22---08-11");
+    }
+
 }

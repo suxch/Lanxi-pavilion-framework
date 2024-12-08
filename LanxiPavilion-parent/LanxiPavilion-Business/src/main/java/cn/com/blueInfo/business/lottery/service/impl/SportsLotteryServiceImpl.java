@@ -28,6 +28,26 @@ public class SportsLotteryServiceImpl extends ServiceImpl<SportsLotteryMapper, S
     private SportsLotteryParam sportsLotteryParam;
 
     @Override
+    public JSONArray queryLotteryInfoByString(String lotteryInfo) {
+        String tableName2 = "sports_lottery_";
+        JSONArray resultInfo = new JSONArray();
+        for (int t_1 = 0, t1_len = 3; t_1 < t1_len; t_1++) {
+            String tableName1 = tableName2.concat(String.valueOf(t_1)).concat("_");
+            for (int t_2 = 1, t2_len = 22; t_2 <= t2_len; t_2++) {
+                String tableName = tableName1.concat(LotteryUtils.number2String(t_2));
+                Integer str = baseMapper.queryLotteryIdByInfoForTable(tableName, lotteryInfo);
+                if (str != null) {
+                    JSONObject result = new JSONObject();
+                    result.put("lotteryId", str);
+                    result.put("tableName", tableName);
+                    resultInfo.add(result);
+                }
+            }
+        }
+        return resultInfo;
+    }
+
+    @Override
     public List<String> querySportsLotteryInfo(String birthday) {
         Long counted = lambdaQuery().count();
         Random random = new Random();

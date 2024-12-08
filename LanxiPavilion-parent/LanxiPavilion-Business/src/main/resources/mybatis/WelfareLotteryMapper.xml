@@ -36,8 +36,12 @@
         ALTER TABLE ${tableName} AUTO_INCREMENT = ${count}
     </update>
 
-    <select id="queryLotteryInfoByIdForTable" resultType="String">
+    <select id="queryLotteryInfoByIdForTable" resultType="java.lang.String">
         select lottery_info from ${tableName} where countId = #{id}
+    </select>
+
+    <select id="queryLotteryIdByInfoForTable" resultType="java.lang.Integer">
+        select countId from ${tableName} where lottery_info = #{lotteryInfo}
     </select>
 
 </mapper>
